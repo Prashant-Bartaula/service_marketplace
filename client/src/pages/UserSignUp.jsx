@@ -1,7 +1,66 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+
+import { Link, useNavigate } from "react-router-dom";
 import SignUpImage from "../assets/Sign Up.png";
 
 export default function UserSignUp() {
+    const [formData, setFormData] = useState({});
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading]=useState(false);
+    const navigate=useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const phoneRegex=/^\d{9}$/
+        const emailRegex=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        const passwordRegex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+
+        // form validation frontend 
+        if(!formData.username || !formData.email || !formData.password || !formData.address || !formData.phone || formData.username==='' || formData.email==='' || formData.password==='' || formData.address==='' || formData.phone===''){ 
+            return setErrorMessage("All fields are required");
+        }
+
+        if(!phoneRegex.test(formData.phone)){
+            return setErrorMessage("Invalid phone number")
+        }
+        if(!emailRegex.test(formData.email)){
+            return setErrorMessage("Invalid email address")
+        }
+        if(!passwordRegex.test(formData.password)){
+            return setErrorMessage("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character")
+        }
+
+        try {
+            setLoading(true);
+            const res=await fetch('http://localhost:5000/api/auth/user-sign-up', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify(formData)
+            })
+
+            const data=await res.json();
+            if(!res.ok){
+                setLoading(false);
+                return setErrorMessage(data.message);
+            }
+            navigate('/sign-in')
+            setLoading(false);
+        } catch (error) {
+            setErrorMessage(error.message);
+            setLoading(false)
+        }
+
+    }
+
+    const handleChange=(e)=>{
+        e.preventDefault();
+        setFormData({
+            ...formData,
+            [e.target.id]:e.target.value
+        })
+    }
+
   return (
     <div
       className={`relative font-rubik min-h-[800px] flex justify-center max-w-[1200px] mx-auto py-[100px] px-4 flex-wrap bg-signup bg-no-repeat bg-center bg-cover lg:bg-none items-center`}
@@ -16,14 +75,15 @@ export default function UserSignUp() {
       </div>
 
       {/* overlay  */}
-      <div className="absolute lg:hidden h-full w-full top-0 left-0 opacity-80 bg-white z-100"></div>
+      <div className="absolute lg:hidden h-full w-full top-0 left-0 opacity-90 bg-white z-100"></div>
+
       {/* right side  */}
       <div className="relative z-100 p-6 text-nowrap flex-grow max-w-[600px]">
         <h1 className="text-2xl md:text-4xl font-rubik mb-10 text-center">
           Service Bazar
         </h1>
 
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={(e)=>handleSubmit(e)}>
           <div className="flex flex-col gap-2">
             <label htmlFor="username" className="font-medium tracking-wider">
               Username
@@ -33,6 +93,7 @@ export default function UserSignUp() {
               id="username"
               placeholder="enter your username..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -44,6 +105,7 @@ export default function UserSignUp() {
               id="phone"
               placeholder="enter your phone number..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -55,6 +117,7 @@ export default function UserSignUp() {
               id="address"
               placeholder="enter your address..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -66,6 +129,7 @@ export default function UserSignUp() {
               id="email"
               placeholder="enter your email..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -77,6 +141,7 @@ export default function UserSignUp() {
               id="password"
               placeholder="enter your email..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <button
@@ -84,7 +149,7 @@ export default function UserSignUp() {
             className="mt-3
              hover:bg-purple-600 hover:text-white transition-all duration-300 ease-linear text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg"
           >
-            Submit
+            {loading?'Signing up...':'Submit'}
           </button>
           <button
             type="button"
@@ -116,6 +181,7 @@ export default function UserSignUp() {
               Login
             </Link>{" "}
           </h1>
+          {errorMessage && <h1 className="bg-red-300 p-2 text-red-900 text-center rounded-lg mt-3 text-lg text-wrap">{errorMessage}</h1>}
         </div>
       </div>
     </div>
