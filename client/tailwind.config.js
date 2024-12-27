@@ -6,7 +6,8 @@ export default {
   theme: {
     extend: {
       screens:{
-        'xs':'500px'
+        'xs':'450px',
+        'md':"900px",
       },
       fontFamily:{
         'rubik':'"Rubik Vinyl", cursive'

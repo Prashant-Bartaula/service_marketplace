@@ -8,7 +8,7 @@ import './App.css'
 export default function App() {
   return (
     <BrowserRouter>
-      <Header/>s
+      <Header/>
       <Routes>
           <Route path='/' element={<Home/>}/>
       </Routes>
