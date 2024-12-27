@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link , useNavigate} from "react-router-dom";
+import {useDispatch, useSelector } from 'react-redux';
+import {signInSuccess} from '../redux/userSlice'
 import SignUpImage from "../assets/Sign Up.png";
 
 export default function UserSignUp(){
   const [formData, setFormData] = useState({});
   const [loading, setLoading]=useState(false);
   const [errorMessage, setErrorMessage]=useState('');
-  const [currentUser, setCurrentUser]=useState(null);
+  const {currentUser}=useSelector((state)=>state.user);
+  const dispatch=useDispatch();
 const navigate=useNavigate();
 
-console.log(currentUser)
   const handleChange=(e)=>{
     e.preventDefault();
 
@@ -38,7 +40,7 @@ console.log(currentUser)
             setLoading(false);
             return setErrorMessage(data.message);
         }
-        setCurrentUser(data.user)
+        dispatch(signInSuccess(data.user))
         setLoading(false);
         navigate('/')
     } catch (error) {
