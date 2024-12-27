@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors'
 import connectDB from './database/db.js';
 import authRoutes from './routes/authRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import cookieParser from 'cookie-parser';
 
 const app=express();
@@ -14,6 +15,7 @@ app.use(cookieParser())
 connectDB();
 
 app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
 
 app.use((err, req, res, next)=>{
     const statusCode=err.statusCode || 500;

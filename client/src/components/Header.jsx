@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { signOutSuccess } from "../redux/userSlice";
 import Model from "./Model";
 import logo from "../assets/logo.png";
 
@@ -9,6 +10,23 @@ export default function Header() {
   const [dropdownActive, setDropdownActive] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const navigate=useNavigate()
+const dispatch = useDispatch();
+
+  const handleSignOut = async () => {
+    setModelOpen(false);
+    try {
+      const res=await fetch('http://localhost:5000/api/user/sign-out')
+      const data=await res.json();
+      if(res.ok){
+        dispatch(signOutSuccess())
+       return  navigate('/user-sign-up')
+      }
+      alert(data.message)
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+  
   return (
     <>
     <div className="relative flex items-center justify-between px-4 py-4">
@@ -60,7 +78,7 @@ export default function Header() {
       )}
     </div>
     {
-      modelOpen && <Model/>
+      modelOpen && <Model setModelOpen={setModelOpen} handleOperation={handleSignOut}/>
     }
     </>
   );

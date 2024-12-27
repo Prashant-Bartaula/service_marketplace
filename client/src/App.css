@@ -16,7 +16,7 @@
 }
 body, html{
   background-color:#fff;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 input::placeholder{
   font-family: 'Rubik Vinyl', sans-serif;
