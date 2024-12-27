@@ -1,7 +1,52 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link , useNavigate} from "react-router-dom";
 import SignUpImage from "../assets/Sign Up.png";
 
-export default function UserSignUp() {
+export default function UserSignUp(){
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading]=useState(false);
+  const [errorMessage, setErrorMessage]=useState('');
+  const [currentUser, setCurrentUser]=useState(null);
+const navigate=useNavigate();
+
+console.log(currentUser)
+  const handleChange=(e)=>{
+    e.preventDefault();
+
+    setFormData({
+      ...formData,
+      [e.target.id]:e.target.value
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(!formData.email || !formData.password  || formData.email==='' || formData.password===''){
+        return setErrorMessage("All fields are required");
+    }
+
+    try {
+        setLoading(true);
+        const res=await fetch('http://localhost:5000/api/auth/sign-in', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(formData)
+        })
+
+        const data=await res.json();
+        if(!res.ok){
+            setLoading(false);
+            return setErrorMessage(data.message);
+        }
+        setCurrentUser(data.user)
+        setLoading(false);
+        navigate('/')
+    } catch (error) {
+        setErrorMessage(error.message);
+        setLoading(false)
+    }
+
+}
   return (
     <div
       className={`relative font-rubik min-h-[800px] flex justify-center max-w-[1200px] mx-auto py-[100px] px-4 flex-wrap bg-signup bg-no-repeat bg-center bg-cover lg:bg-none items-center`}
@@ -23,7 +68,7 @@ export default function UserSignUp() {
           Service Bazar
         </h1>
 
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={(e)=>handleSubmit(e)}>
          
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="font-medium tracking-wider">
@@ -34,6 +79,7 @@ export default function UserSignUp() {
               id="email"
               placeholder="enter your email..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -45,6 +91,7 @@ export default function UserSignUp() {
               id="password"
               placeholder="enter your email..."
               className="outline-none border-[1px] border-gray-500 px-3 py-2 rounded-lg"
+              onChange={(e)=>handleChange(e)}
             />
           </div>
           <button
@@ -52,7 +99,7 @@ export default function UserSignUp() {
             className="mt-3
              hover:bg-purple-600 hover:text-white transition-all duration-300 ease-linear text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg"
           >
-            Submit
+            {loading?"Signing In...":"Sign In"}
           </button>
           <button
             type="button"
@@ -75,6 +122,7 @@ export default function UserSignUp() {
               Sign Up
             </Link>{" "}
           </h1>
+          {errorMessage && <h1 className="bg-red-300 p-2 text-red-900 text-center rounded-lg mt-3 text-lg text-wrap">{errorMessage}</h1>}
         </div>
       </div>
     </div>
