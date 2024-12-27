@@ -11,8 +11,15 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+::-webkit-scrollbar{
+  display: none;
+}
 body, html{
   background-color:#fff;
+}
+input::placeholder{
+  font-family: 'Rubik Vinyl', sans-serif;
+  word-spacing: 5px;
 }
 #root{
   height: 100vh;
@@ -21,4 +28,7 @@ body, html{
   margin: 0 auto;
   padding: 20px;
   position: relative;
+}
+.word-spacing{
+  word-spacing: 4px;
 }

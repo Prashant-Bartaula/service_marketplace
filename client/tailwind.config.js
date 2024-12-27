@@ -1,3 +1,4 @@
+
 export default {
   content: [
     "./index.html",
@@ -11,7 +12,10 @@ export default {
       },
       fontFamily:{
         'rubik':'"Rubik Vinyl", cursive'
-      }
+      },
+      backgroundImage: {
+        'signup': "url('./src/assets/Sign Up.png')",
+      },
     },
   },
   plugins: [],

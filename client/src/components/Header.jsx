@@ -13,14 +13,14 @@ export default function Header() {
 
                 {/* search */}
                 <form className="px-4 py-2 rounded-2xl border-[1px] border-gray-700">
-                    <input type="text" placeholder="Search anything... " className="outline-none  md:w-[250px] lg:w-[450px]" />
-                    <span><i className="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" placeholder="Search anything... " className="outline-none w-[100px] xs:w-[200px]  md:w-[250px] lg:w-[400px]" />
+                    <span><i className="fa-solid fa-magnifying-glass ml-3"></i></span>
                 </form>
 
                 {/* login signup  */}
                 <div className="hidden md:flex gap-10 items-center ">
-                    <Link to='/sign-in'><button className="tracking-wider text-lg font-medium text-nowrap font-rubik">login</button></Link>
-                    <Link to='/user-sign-up'><button className="tracking-wider text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg text-nowrap font-rubik">Sign Up</button></Link>
+                    <Link to='/sign-in'><button className="tracking-wider text-lg font-medium text-nowrap font-rubik hover:text-sky-500 transition-all duration-200 ease-linear">login</button></Link>
+                    <Link to='/user-sign-up'><button className="tracking-wider text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg text-nowrap font-rubik hover:bg-purple-700 hover:text-white transition-all duration-300 ease-linear">Sign Up</button></Link>
                 </div>
     </div>
   )
