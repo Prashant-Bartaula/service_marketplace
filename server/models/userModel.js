@@ -15,9 +15,9 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    isAdmin:{
-        type:Boolean,
-        default:false
+    role:{
+        type:String,
+        default:'customer'
     },
     address:{
         type:String,
@@ -27,7 +27,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-    }
+    },
 }, {timestamps:true})
 
 export default mongoose.model('User', userSchema);
