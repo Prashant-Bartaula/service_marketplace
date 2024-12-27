@@ -19,8 +19,8 @@ export default function Header() {
 
                 {/* login signup  */}
                 <div className="hidden md:flex gap-10 items-center ">
-                    <Link to='/sign-in'><button className="tracking-wider text-lg font-medium text-nowrap">login</button></Link>
-                    <Link to='/sign-up'><button className="tracking-wider text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg text-nowrap">Sign Up</button></Link>
+                    <Link to='/sign-in'><button className="tracking-wider text-lg font-medium text-nowrap font-rubik">login</button></Link>
+                    <Link to='/user-sign-up'><button className="tracking-wider text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg text-nowrap font-rubik">Sign Up</button></Link>
                 </div>
     </div>
   )
