@@ -74,6 +74,26 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+export const deleteUser = async (req, res, next) => {
+  if(req.user.id!==req.params.userId){
+    return next(errorHandler(401, "unauthorized"));
+  }
+  
+  try {
+    if(req.user.role==="worker"){
+      await Worker.findByIdAndDelete(req.params.userId);
+    }else{
+      await User.findByIdAndDelete(req.params.userId);
+    }
+
+    res.status(200).clearCookie("access_token").json({
+      message: "user deleted successfully",
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const signOut = async (req, res, next) => {
   try {
     res.clearCookie("access_token").status(200).json({

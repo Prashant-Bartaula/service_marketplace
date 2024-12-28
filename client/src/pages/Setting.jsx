@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { updateSuccess } from "../redux/userSlice";
+import { updateSuccess, deleteSuccess } from "../redux/userSlice";
+import Model from "../components/Model";
 import axios from "axios";
 export default function Setting() {
   const [formData, setFormData] = useState({});
@@ -12,9 +14,11 @@ export default function Setting() {
   const [uploadProgress, setUploadProgress] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [updateSuccessMessage, setUpdateSuccessMessage] = useState("");
+  const [openModel, setOpenModel] = useState(false);
   const imageRef = useRef(null);
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate=useNavigate()
 
   useEffect(() => {
     const handleChange = () => {
@@ -123,79 +127,111 @@ export default function Setting() {
       setErrorMessage(error.message);
     }
   };
+
+  const handleUserDelete = async () => {
+    setOpenModel(false);
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/user/delete/${currentUser._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if(!res.ok){
+        return setErrorMessage(data.message);
+      }
+      dispatch(deleteSuccess());
+      navigate('/user-sign-up')
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
   return (
-    <div className="relative z-50 min-h-[800px] max-w-[500px] mx-auto flex flex-col gap-14 items-center justify-center">
-      <form
-        onSubmit={(e) => handleSubmit(e)}
-        className="flex flex-col gap-5 items-center w-full"
-      >
-        {/* image upload  */}
-        <div className="flex justify-center flex-col">
+    <>
+      <div className="relative z-50 min-h-[800px] max-w-[500px] mx-auto flex flex-col gap-14 items-center justify-center">
+        <form
+          onSubmit={(e) => handleSubmit(e)}
+          className="flex flex-col gap-5 items-center w-full"
+        >
+          {/* image upload  */}
+          <div className="flex justify-center flex-col">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={imageRef}
+              disabled={uploading}
+            />
+            <img
+              src={imageUrl || currentUser?.profilePic}
+              alt={currentUser?.username}
+              className="w-[150px] h-[150px] rounded-full object-cover cursor-pointer"
+              onClick={() => imageRef.current.click()}
+            />
+            <button
+              type="button"
+              disabled={uploading}
+              onClick={(e) => handleImageUpload(e)}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-4"
+            >
+              {uploading ? `Uploading...${uploadProgress + "%"}` : "upload"}
+            </button>
+
+            {imageUploadError && (
+              <p className="text-red-500 text-sm mt-2">{imageUploadError}</p>
+            )}
+          </div>
+
           <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={imageRef}
-            disabled={uploading}
+            type="text"
+            defaultValue={currentUser?.username}
+            onChange={(e) => handleChange(e)}
+            className="p-2 rounded-lg border border-gray-300 w-full"
+            id="username"
+            placeholder="Username..."
           />
-          <img
-            src={imageUrl || currentUser?.profilePic}
-            alt={currentUser?.username}
-            className="w-[150px] h-[150px] rounded-full object-cover cursor-pointer"
-            onClick={() => imageRef.current.click()}
+
+          <input
+            type="password"
+            defaultValue="*****"
+            onChange={(e) => handleChange(e)}
+            className="p-2 rounded-lg border border-gray-300 w-full"
+            id="password"
+            placeholder="Password... "
           />
+
           <button
-            type="button"
-            disabled={uploading}
-            onClick={(e) => handleImageUpload(e)}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-4"
+            type="submit"
+            className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg"
           >
-            {uploading ? `Uploading...${uploadProgress + "%"}` : "upload"}
+            {updating ? "Updating..." : "Update"}
           </button>
-
-          {imageUploadError && (
-            <p className="text-red-500 text-sm mt-2">{imageUploadError}</p>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-3">{errorMessage}</p>
           )}
-        </div>
-
-        <input
-          type="text"
-          defaultValue={currentUser?.username}
-          onChange={(e) => handleChange(e)}
-          className="p-2 rounded-lg border border-gray-300 w-full"
-          id="username"
-          placeholder="Username..."
-        />
-
-        <input
-          type="password"
-          defaultValue="*****"
-          onChange={(e) => handleChange(e)}
-          className="p-2 rounded-lg border border-gray-300 w-full"
-          id="password"
-          placeholder="Password... "
-        />
+          {updateSuccessMessage && (
+            <p className="text-green-500 text-sm mt-3">
+              {updateSuccessMessage}
+            </p>
+          )}
+        </form>
 
         <button
-          type="submit"
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg"
+          type="button"
+          className="text-sm text-gray-400"
+          onClick={() => setOpenModel(true)}
         >
-          {updating ? "Updating..." : "Update"}
+          <i className="fa-solid fa-trash"></i>
+          <span className="ml-2">Delete Account</span>
         </button>
-        {errorMessage && (
-          <p className="text-red-500 text-sm mt-3">{errorMessage}</p>
-        )}
-        {
-          updateSuccessMessage && (
-            <p className="text-green-500 text-sm mt-3">{updateSuccessMessage}</p>
-          )
-        }
-      </form>
+      </div>
 
-      <button type="button" className="text-sm text-gray-400">
-        <i className="fa-solid fa-trash"></i>
-        <span className="ml-2">Delete Account</span>
-      </button>
-    </div>
+      {openModel && (
+        <Model setModelOpen={setOpenModel} handleOperation={handleUserDelete} />
+      )}
+    </>
   );
 }
