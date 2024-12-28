@@ -65,7 +65,6 @@ export default function Setting() {
         }
       )
       const data=await res.data;
-      console.log(data)
       setImageUrl(data.secure_url);
       setFormData({
         ...formData,
@@ -77,8 +76,18 @@ export default function Setting() {
       setImageUploadError(error.message);
     }
   }
+
+  const handleSubmit=async (e)=>{
+    e.preventDefaultt();
+
+    try {
+      
+    } catch (error) {
+      setErrorMessage(error.message)
+    }
+  }
   return (
-    <div className="relative min-h-[800px] max-w-[500px] mx-auto flex flex-col gap-14 items-center justify-center">
+    <div className="relative z-50 min-h-[800px] max-w-[500px] mx-auto flex flex-col gap-14 items-center justify-center">
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-5 items-center w-full">
         {/* image upload  */}
         <div className="flex justify-center flex-col"> 
