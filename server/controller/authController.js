@@ -118,20 +118,35 @@ export const signIn = async (req, res, next) => {
   }
   try {
     const user = await User.findOne({ email });
-    if(!user) {
+    const worker=await Worker.findOne({email});
+    if(!user && !worker) {
       return next(errorHandler(400, "user not found"));
     }
 
-    if(!bcryptjs.compareSync(password, user.password)) {
-      return next(errorHandler(401, "invalid username or password"));
-    }
-
-    const token = jwt.sign({
+    let token='';
+    let roleBasedUser=[]
+    if(user){
+      if(!bcryptjs.compareSync(password, user.password)) {
+        return next(errorHandler(401, "invalid username or password"));
+      }
+      token = jwt.sign({
         id:user._id,
         role:user.role
-    }, process.env.JWT_SECRET);
+      }, process.env.JWT_SECRET);
+      roleBasedUser=user._doc
+    }else{
+      if(!bcryptjs.compareSync(password, worker.password)) {
+        return next(errorHandler(401, "invalid username or password"));
+      }
+      token = jwt.sign({
+        id:worker._id,
+        role:worker.role
+      }, process.env.JWT_SECRET);
 
-    const {password:pass, ...rest}=user._doc
+      roleBasedUser=worker._doc
+    }
+    
+    const {password:pass, ...rest}=roleBasedUser
 
     res.status(200).cookie("access_token", token, { httpOnly: true }).json({
       success: true,
