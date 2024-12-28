@@ -25,7 +25,7 @@ const dispatch = useDispatch();
        return  navigate('/user-sign-up')
       }
       alert(data.message)
-    } catch (error) {
+    } catch (error){
       alert(error.message)
     }
   }
