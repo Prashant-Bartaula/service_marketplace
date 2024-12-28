@@ -1,11 +1,29 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from 'axios'
 export default function Setting() {
   const [formData, setFormData] = useState({});
   const [imageFile, setImageFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [imageUploadError, setImageUploadError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress]=useState('')
+  const [imageUrl, setImageUrl] = useState('');
   const imageRef=useRef(null)
   const { currentUser } = useSelector((state) => state.user);
+
+  useEffect(()=>{
+    const handleChange=(e)=>{
+      setErrorMessage('')
+      setImageUploadError('')
+      setUploadProgress('')
+      setImageFile(imageRef.current.files[0])
+    }
+
+    imageRef.current.addEventListener('change', handleChange)
+
+    return ()=> imageRef.current.removeEventListener('change', handleChange);
+  }, [])
 
   const handleChange=(e)=>{
     e.preventDefault();
@@ -15,20 +33,67 @@ export default function Setting() {
       [e.target.id]:e.target.value
     })
   }
-  console.log(formData)
+
+  const handleImageUpload=async (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+    setErrorMessage('')
+    setImageUploadError('')
+    setUploadProgress('')
+
+    if(!imageFile){
+      return setImageUploadError("Please select an image");
+    }
+
+    if(imageFile.size > 2000000){
+      return setImageUploadError("Image size must be less than 2MB");
+    }
+
+    const file=new FormData();
+    file.append('file', imageFile);
+    file.append('upload_preset', import.meta.env.VITE_CLOUDINARY_PRESET);
+    file.append('folder', 'service-marketplace');
+
+    try { 
+      setUploading(true);
+      const res=await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload`, 
+        file, {
+          onUploadProgress:(progressEvent)=>{
+            const percentComplete=Math.round((progressEvent.loaded/progressEvent.total)*100);
+            setUploadProgress(percentComplete)
+          }
+        }
+      )
+      const data=await res.data;
+      console.log(data)
+      setImageUrl(data.secure_url);
+      setFormData({
+        ...formData,
+        profilePic:data.secure_url
+      })
+      setUploading(false);
+    } catch (error) {
+      setUploading(false);
+      setImageUploadError(error.message);
+    }
+  }
   return (
     <div className="relative min-h-[800px] max-w-[500px] mx-auto flex flex-col gap-14 items-center justify-center">
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-5 items-center w-full">
         {/* image upload  */}
         <div className="flex justify-center flex-col"> 
-        <input type="file" accept="image/*" className="hidden" ref={imageRef}/>
+        <input type="file" accept="image/*" className="hidden" ref={imageRef} disabled={uploading}/>
         <img
-          src={currentUser?.profilePic}
+          src={imageUrl || currentUser?.profilePic}
           alt={currentUser?.username}
           className="w-[150px] h-[150px] rounded-full cursor-pointer"
           onClick={()=>imageRef.current.click()}
         />
-        <button type="button" onClick={(e)=>handleImageUpload(e)} className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-4">Upload</button>
+        <button type="button" disabled={uploading} onClick={(e)=>handleImageUpload(e)} className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-4">{
+            uploading?`Uploading...${uploadProgress + '%'}`:'upload'
+          }</button>
+
+          {imageUploadError && <p className="text-red-500 text-sm mt-2">{imageUploadError}</p>}
         </div>
 
         <input type="text" defaultValue={currentUser?.username} onChange={(e)=>handleChange(e)} className="p-2 rounded-lg border border-gray-300 w-full" id="username" placeholder="Username..."/>
