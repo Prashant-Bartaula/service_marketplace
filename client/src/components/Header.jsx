@@ -60,9 +60,9 @@ const dispatch = useDispatch();
           <img src={currentUser?.profilePic} alt={currentUser?.username} className="h-10 w-10 rounded-full object-cover"/>
 
           {/* dropdown  */}
-          <div className={`${dropdownActive?'flex':'hidden'} absolute top-12 right-4 flex-col gap-4 bg-slate-100  p-6 shadow-xl rounded-lg transition-all duration-300 ease-linear`}>
-            <Link to="/profile">Profile</Link>
-            <button onClick={() => setModelOpen(true)} className="text-red-500">Logout</button>
+          <div className={`${dropdownActive?'flex':'hidden'} absolute top-12 right-4 flex-col gap-5 bg-slate-100  p-6 shadow-xl rounded-lg transition-all duration-300 ease-linear`}>
+            <Link to="/setting"><i className="fa-solid fa-gear"></i><span className="ml-2">Setting</span></Link>
+            <button onClick={() => setModelOpen(true)} className="text-red-500 text-nowrap"><i className="fa-solid fa-right-from-bracket"></i><span className="ml-2">Log out</span></button>
           </div>
         </div>
       ) : (

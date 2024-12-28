@@ -13,6 +13,9 @@ const userSlice=createSlice({
         },
         signOutSuccess:(state)=>{
             state.currentUser=null;
+        },
+        updateSuccess:(state, action)=>{
+            state.currentUser=action.payload
         }
     }
 })

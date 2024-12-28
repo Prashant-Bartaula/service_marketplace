@@ -6,6 +6,8 @@ import Home from './pages/Home'
 import UserSignUp from './pages/UserSignUp'
 import WorkerSignUp from './pages/WorkerSignUp'
 import SignIn from './pages/SignIn'
+import PrivateRoute from './components/PrivateRoute'
+import Setting from './pages/Setting'
 import './App.css'
 
 export default function App() {
@@ -17,6 +19,9 @@ export default function App() {
           <Route path='/sign-in' element={<SignIn/>}/>
           <Route path='/user-sign-up' element={<UserSignUp/>}/>
           <Route path='/worker-sign-up' element={<WorkerSignUp/>}/>
+          <Route element={<PrivateRoute/>}>
+            <Route path='/setting' element={<Setting/>}/>
+          </Route>
       </Routes>
       <Footer/>
     </BrowserRouter>
