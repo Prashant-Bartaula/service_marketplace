@@ -68,7 +68,7 @@ const dispatch = useDispatch();
       ) : (
         <div className="hidden md:flex gap-10 items-center">
           <Link to="/sign-in">
-            <button className="tracking-wider text-lg font-medium text-nowrap font-rubik hover:text-sky-500 transition-all duration-200 ease-linear">
+            <button className="tracking-wider text-lg font-medium text-nowrap font-rubik hover:text-purple-700 transition-all duration-200 ease-linear">
               login
             </button>
           </Link>

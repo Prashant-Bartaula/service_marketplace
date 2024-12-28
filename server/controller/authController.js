@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import Worker from "../models/workerModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
@@ -21,6 +22,18 @@ export const userSignUp = async (req, res, next) => {
     return next(errorHandler(400, "All fields are required"));
   }
 
+  const existingCustomer=await User.findOne({
+    $or:[{username}, {phone}, {email}]
+  })
+
+  const existingWorker=await Worker.findOne({
+    $or:[{username}, {phone}, {email}]
+  })
+
+  if(existingCustomer || existingWorker){
+    return next(errorHandler(400, "user already exists"))
+  }
+
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({
     username,
@@ -40,10 +53,58 @@ export const userSignUp = async (req, res, next) => {
   }
 };
 export const workerSignUp = async (req, res, next) => {
+  const { username, email, address, phone, password, workingHour, age, gender } = req.body;
+
+  if (
+    !username ||
+    !email ||
+    !address ||
+    !phone ||
+    !password ||
+    !workingHour ||
+    !age ||
+    !gender ||
+    username === "" ||
+    email === "" ||
+    address === "" ||
+    phone === "" ||
+    password === "" ||
+    workingHour === "" ||
+    age === "" ||
+    gender === ""
+  ) {
+    return next(errorHandler(400, "All fields are required"));
+  }
+
+  const existingCustomer=await User.findOne({
+    $or:[{username}, {phone}, {email}]
+  })
+
+  const existingWorker=await Worker.findOne({
+    $or:[{username}, {phone}, {email}]
+  })
+
+  if(existingCustomer || existingWorker){
+    return next(errorHandler(400, "user already exists"))
+  }
+
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+  const newUser = new Worker({
+    username,
+    email,
+    address,
+    phone,
+    password: hashedPassword,
+    workingHour,
+    age,
+    gender
+  });
+
   try {
-    if (true) {
-      return next(errorHandler(404, "User already exist"));
-    }
+    await newUser.save();
+    res.status(200).json({
+      message: "user created successfully",
+    });
   } catch (error) {
     next(error);
   }
