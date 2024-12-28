@@ -77,7 +77,7 @@ export default function WorkerSignUp() {
     e.preventDefault();
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value.trim(),
     });
   };
 
@@ -201,14 +201,6 @@ export default function WorkerSignUp() {
              hover:bg-purple-600 hover:text-white transition-all duration-300 ease-linear text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg"
           >
             {loading ? "Signing up..." : "Submit"}
-          </button>
-          <button
-            type="button"
-            className="
-            hover:bg-purple-600 hover:text-white transition-all duration-300 ease-linear text-lg font-medium border border-gray-500 px-3 py-2 rounded-lg"
-          >
-            <i className="fa-brands fa-google mr-4 border border-gray-600 p-2 rounded-full"></i>
-            Sign up with Google
           </button>
         </form>
 
