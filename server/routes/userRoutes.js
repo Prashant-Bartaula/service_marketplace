@@ -3,6 +3,6 @@ import {signOut} from '../controller/userController.js'
 
 const router=express.Router()
 
-router.get('/sign-out', signOut)
+router.post('/sign-out', signOut)
 
 export default router

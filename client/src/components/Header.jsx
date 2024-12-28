@@ -15,7 +15,10 @@ const dispatch = useDispatch();
   const handleSignOut = async () => {
     setModelOpen(false);
     try {
-      const res=await fetch('http://localhost:5000/api/user/sign-out')
+      const res=await fetch('http://localhost:5000/api/user/sign-out', {
+        method:'POST',
+        credentials: 'include'
+      })
       const data=await res.json();
       if(res.ok){
         dispatch(signOutSuccess())
@@ -26,7 +29,7 @@ const dispatch = useDispatch();
       alert(error.message)
     }
   }
-  
+
   return (
     <>
     <div className="relative flex items-center justify-between px-4 py-4">
