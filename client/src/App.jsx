@@ -9,7 +9,7 @@ import SignIn from './pages/SignIn'
 import PrivateRoute from './components/PrivateRoute'
 import OnlyWorkerRoute from './components/OnlyWorkerRoute'
 import Setting from './pages/Setting'
-import CreatePost from './pages/CreatePost'
+import CreateService from './pages/CreateService'
 import './App.css'
 
 export default function App() {
@@ -25,7 +25,7 @@ export default function App() {
             <Route path='/setting' element={<Setting/>}/>
           </Route>
           <Route element={<OnlyWorkerRoute/>}>
-            <Route path='/create-post' element={<CreatePost/>}/>
+            <Route path='/create-post' element={<CreateService/>}/>
           </Route>
       </Routes>
       <Footer/>

@@ -22,6 +22,10 @@ input::placeholder{
   font-family: 'Rubik Vinyl', sans-serif;
   word-spacing: 5px;
 }
+textarea{
+  font-family: 'Rubik Vinyl', sans-serif;
+  word-spacing: 5px;
+}
 #root{
   height: 100vh;
   width: 100vw;
