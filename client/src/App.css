@@ -22,7 +22,7 @@ input::placeholder{
   font-family: 'Rubik Vinyl', sans-serif;
   word-spacing: 5px;
 }
-textarea{
+textarea::placeholder{
   font-family: 'Rubik Vinyl', sans-serif;
   word-spacing: 5px;
 }

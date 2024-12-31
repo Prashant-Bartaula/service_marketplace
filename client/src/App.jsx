@@ -10,6 +10,7 @@ import PrivateRoute from './components/PrivateRoute'
 import OnlyWorkerRoute from './components/OnlyWorkerRoute'
 import Setting from './pages/Setting'
 import CreateService from './pages/CreateService'
+import ServicePage from './pages/ServicePage'
 import './App.css'
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
           <Route element={<OnlyWorkerRoute/>}>
             <Route path='/create-post' element={<CreateService/>}/>
           </Route>
+          <Route path='/post/:postSlug' element={<ServicePage/>}/>
       </Routes>
       <Footer/>
     </BrowserRouter>

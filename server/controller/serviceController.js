@@ -12,10 +12,10 @@ export const createService=async(req,res, next)=>{
         return next(errorHandler(400, "fill all the required fields..."));
     }
 
-    const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${new Date().toLocaleDateString()}`
+    const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
 
     const newService=new Service({
-        title, category, description, serviceDate, servicePic, gallery, price, workerId:req.user.id, slug
+        title, category, description, serviceDate, servicePic, gallery, price:parseInt(price), workerId:req.user.id, slug
     });
 
     try {

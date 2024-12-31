@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import {useNavigate} from "react-router-dom"
 import axios from "axios";
 
 export default function CreateService() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [imageUploadSuccess, setImageUploadSuccess] = useState("");
   const [servicePicImageFile, setServicePicImageFile] = useState("");
   const [formData, setFormData] = useState({});
+const navigate=useNavigate();
 
   const handleServiceImageFile = (e) => {
     e.preventDefault();
@@ -20,6 +23,8 @@ export default function CreateService() {
 
   const handleImageUpload=async(e)=>{
     e.stopPropagation();
+    e.preventDefault();
+    
     setErrorMessage("");
     setUploadProgress("");
     setImageUploadSuccess("");
@@ -58,11 +63,38 @@ export default function CreateService() {
 
   const handleChange = (e) => {
     e.preventDefault();
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value.trim(),
+    })
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    setErrorMessage("");
+
+    try {
+      setCreating(true);
+        const res=await fetch(`http://localhost:5000/api/service/create`,{
+          method:"POST",
+          headers:{
+            'Content-type': 'application/json'
+          },
+          body:JSON.stringify(formData),
+          credentials:"include"
+        });
+
+        const data=await res.json();
+        setCreating(false);
+        if(!res.ok){
+          return setErrorMessage(data.message);
+        }
+        navigate(`/post/${data.newService.slug}`)
+    } catch (error) {
+      setCreating(false);
+      setErrorMessage(error.message);
+    }
   };
   return (
     <div className="min-h-[1200px] max-w-[700px] relative mx-auto flex justify-center items-center">
@@ -84,6 +116,7 @@ export default function CreateService() {
             name="title"
             className="outline-none border-2 border-gray-400 px-3 py-2 rounded-lg"
             placeholder="Enter Post Title..."
+            onChange={(e) => handleChange(e)}
           />
         </div>
 
@@ -98,6 +131,7 @@ export default function CreateService() {
             name="category"
             id="category"
             className="outline-none border-2 border-gray-400 px-3 py-2 rounded-lg cursor-pointer"
+            onChange={(e) => handleChange(e)}
           >
             <option value="cleaning" defaultChecked>
               Cleaning
@@ -124,18 +158,20 @@ export default function CreateService() {
             name="description"
             className="min-h-[100px] outline-none border-2 border-gray-400 px-3 py-2 rounded-lg"
             placeholder="Enter Post Description..."
+            onChange={(e) => handleChange(e)}
           />
         </div>
 
         <div className="w-full flex flex-col gap-2 px-4">
-          <label htmlFor="date" className="text-lg font-medium tracking-wider">
+          <label htmlFor="serviceDate" className="text-lg font-medium tracking-wider">
             Select a service date<sup className="text-red-500">*</sup>
           </label>
           <input
             type="date"
-            id="date"
-            name="date"
-            className="outline-none border-2 border-gray-400 px-3 py-2 rounded-lg"
+            id="serviceDate"
+            name="serviceDate"
+            className="cursor-pointer outline-none border-2 border-gray-400 px-3 py-2 rounded-lg"
+            onChange={(e) => handleChange(e)}
           />
         </div>
 
@@ -148,6 +184,7 @@ export default function CreateService() {
             id="price"
             name="price"
             className="outline-none border-2 border-gray-400 px-3 py-2 rounded-lg"
+            onChange={(e) => handleChange(e)}
           />
         </div>
 
@@ -190,14 +227,14 @@ export default function CreateService() {
 
         <div className="w-full relative px-4" onClick={(e) => handleSubmit(e)}>
           <button className="w-full bg-purple-600 text-white py-2 rounded-lg">
-            Create Service
+            {creating ? "Creating..." : "Create Service"}
           </button>
         </div>
 
         {imageUploadSuccess && (
           <p className="text-green-500 text-center">{imageUploadSuccess}</p>
         )}
-        
+
           {errorMessage && (
             <p className="text-red-500 text-center">{errorMessage}</p>
           )}
