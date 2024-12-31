@@ -7,7 +7,9 @@ import UserSignUp from './pages/UserSignUp'
 import WorkerSignUp from './pages/WorkerSignUp'
 import SignIn from './pages/SignIn'
 import PrivateRoute from './components/PrivateRoute'
+import OnlyWorkerRoute from './components/OnlyWorkerRoute'
 import Setting from './pages/Setting'
+import CreatePost from './pages/CreatePost'
 import './App.css'
 
 export default function App() {
@@ -21,6 +23,9 @@ export default function App() {
           <Route path='/worker-sign-up' element={<WorkerSignUp/>}/>
           <Route element={<PrivateRoute/>}>
             <Route path='/setting' element={<Setting/>}/>
+          </Route>
+          <Route element={<OnlyWorkerRoute/>}>
+            <Route path='/create-post' element={<CreatePost/>}/>
           </Route>
       </Routes>
       <Footer/>
