@@ -35,10 +35,6 @@ const serviceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    gallery: {
-      type: [String],
-      default:[],
-    },
     isCompleted: {
       type: Boolean,
       default: false,
