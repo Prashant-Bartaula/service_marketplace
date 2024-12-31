@@ -11,6 +11,7 @@ import OnlyWorkerRoute from './components/OnlyWorkerRoute'
 import Setting from './pages/Setting'
 import CreateService from './pages/CreateService'
 import ServicePage from './pages/ServicePage'
+import NotFoundPage from './components/NotFoundPage'
 import './App.css'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
             <Route path='/create-post' element={<CreateService/>}/>
           </Route>
           <Route path='/post/:postSlug' element={<ServicePage/>}/>
+          <Route path='*' element={<NotFoundPage/>}/>
       </Routes>
       <Footer/>
     </BrowserRouter>

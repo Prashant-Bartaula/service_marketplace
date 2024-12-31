@@ -133,7 +133,10 @@ const navigate=useNavigate();
             className="outline-none border-2 border-gray-400 px-3 py-2 rounded-lg cursor-pointer"
             onChange={(e) => handleChange(e)}
           >
-            <option value="cleaning" defaultChecked>
+            <option value="">
+              Not selected
+            </option>
+            <option value="cleaning">
               Cleaning
             </option>
             <option value="plumbing">Plumbing</option>

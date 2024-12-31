@@ -2,7 +2,7 @@ import Service from "../models/serviceModel.js";
 import { errorHandler } from "../utils/error.js";
 
 export const createService=async(req,res, next)=>{
-    const {title, category, description, serviceDate, servicePic, gallery, price}=req.body
+    const {title, category, description, serviceDate, servicePic, price}=req.body
 
     if(!req.user ||!req.user.role==='worker'){
         return next(errorHandler(401, "unauthorized"))
@@ -15,7 +15,7 @@ export const createService=async(req,res, next)=>{
     const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
 
     const newService=new Service({
-        title, category, description, serviceDate, servicePic, gallery, price:parseInt(price), workerId:req.user.id, slug
+        title, category, description, serviceDate, servicePic:servicePic || undefined, price:parseInt(price), workerId:req.user.id, slug
     });
 
     try {
