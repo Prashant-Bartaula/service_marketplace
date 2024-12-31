@@ -50,4 +50,4 @@ const workerSchema=new mongoose.Schema({
     }
 }, {timestamps:true})
 
-export default mongoose.model('Customer', workerSchema);
+export default mongoose.model('worker', workerSchema);

@@ -31,3 +31,49 @@ export const createService=async(req,res, next)=>{
         next(error)
     }
 }
+
+export const getServices=async(req, res, next)=>{
+    try {
+        const startIndex=req.query.startIndex || 0;
+        const limit= req.query.limit || 10;
+        const sortDirection=req.query.order==='asc'?1:-1
+        const services=await Service.find({
+            ...(req.query.category && {category:req.query.category}),
+            ...(req.query.slug && {slug:req.query.slug}),
+            ...(req.query.workerId && {workerId:req.query.workerId}),
+            ...(req.query.searchTerm && {
+                    $or:[
+                        {title:{$regex:req.query.searchTerm, $options:"i"}},
+                        {category:{$regex:req.query.searchTerm, $options:"i"}},
+                    ]
+            })
+        }).sort({
+            updatedAt:sortDirection
+        }).skip(startIndex).limit(limit);
+
+        const totalServices=await Service.countDocuments();
+
+        const dateNow=new Date();
+
+        const lastMonthAgo= new Date(
+            dateNow.getFullYear(),
+            dateNow.getMonth()-1,
+            dateNow.getDate()
+        );
+
+        const lastMonthServices=await Service.countDocuments({
+            createdAt:{$gte:lastMonthAgo}
+        })
+        if(!services){
+            return next(errorHandler(400, "no services found..."));
+        }
+
+        res.status(200).json({
+            services,
+            totalServices,
+            lastMonthServices
+        })
+    } catch (error) {
+        next(error)
+    }
+}
