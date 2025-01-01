@@ -8,7 +8,6 @@ export default function ServicePage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  console.log(post);
   useEffect(() => {
     const getPost = async () => {
       setErrorMessage("");

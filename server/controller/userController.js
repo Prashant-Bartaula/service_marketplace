@@ -103,3 +103,19 @@ export const signOut = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getWorker=async(req, res, next)=>{
+  try {
+    const worker=await Worker.findById(req.params.workerId);{
+      if(!worker){
+       return  next(errorHandler(400, "worker not found"));
+      }
+      const {password, ...rest}=worker._doc;
+      res.status(200).json({
+        worker:rest,
+      })
+    }
+  } catch (error) {
+    next(error);
+  }
+}
