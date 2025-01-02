@@ -60,7 +60,7 @@ const dispatch = useDispatch();
           <img src={currentUser?.profilePic} alt={currentUser?.username} className="h-10 w-10 rounded-full object-cover"/>
 
           {/* dropdown  */}
-          <div className={`${dropdownActive?'flex':'hidden'} absolute top-12 right-4 flex-col  px-4 py-4 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.2)] rounded-lg transition-all duration-300 ease-linear`}>
+          <div className={`${dropdownActive?'flex':'hidden'} absolute top-12 right-4 flex-col  px-4 py-4 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.2)] rounded-lg transition-all duration-300 ease-linear z-50`}>
             <Link to='/profile' className="text-nowrap w-max px-2 rounded-lg transition-all hover:bg-gray-100 duration-300 py-3  border-b-[1px] border-gray-500  ">
               <div className="flex gap-2 items-center">
                   <img src={currentUser?.profilePic} alt={currentUser?.username} className="h-10 w-10 rounded-full object-cover"/>
@@ -69,7 +69,7 @@ const dispatch = useDispatch();
                   "><i className="fa-solid fa-arrow-right"></i></span>
               </div>
             </Link>
-            <Link to="/setting" className="mt-2 rounded-lg p-2 transition-all hover:bg-gray-100 duration-300"><i className="fa-solid fa-gear"></i><span className="ml-2">Setting</span></Link>
+            <Link to="/setting" className="mt-4 rounded-lg p-2 transition-all hover:bg-gray-100 duration-300 cursor-pointer"><i className="fa-solid fa-gear"></i><span className="ml-2">Setting</span></Link>
             <div onClick={() => setModelOpen(true)} className="text-red-500 rounded-lg p-2 transition-all hover:bg-gray-100 duration-300"><i className="fa-solid fa-right-from-bracket"></i><span className="ml-2">Log out</span></div>
           </div>
         </div>
@@ -94,3 +94,4 @@ const dispatch = useDispatch();
     </>
   );
 }
+

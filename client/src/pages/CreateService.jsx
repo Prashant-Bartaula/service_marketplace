@@ -90,7 +90,7 @@ const navigate=useNavigate();
         if(!res.ok){
           return setErrorMessage(data.message);
         }
-        navigate(`/post/${data.newService.slug}`)
+        navigate(`/service/${data.newService.slug}`)
     } catch (error) {
       setCreating(false);
       setErrorMessage(error.message);

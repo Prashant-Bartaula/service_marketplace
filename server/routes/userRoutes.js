@@ -9,4 +9,5 @@ router.delete('/delete/:userId', verifyUser, deleteUser)
 router.post('/sign-out', signOut)
 router.get('/getWorker/:workerId', getWorker);
 
+
 export default router

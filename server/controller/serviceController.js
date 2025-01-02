@@ -82,3 +82,21 @@ export const getServices=async(req, res, next)=>{
         next(error)
     }
 }
+
+export const getCustomerServices=async(req, res, next)=>{
+    if(!req.user || !req.user.role==='customer'){
+        return next(errorHandler(401, "unauthorized"));
+    }
+
+    try {
+        const services=await Service.find({bookerId:req.user.id});
+        if(!services){
+            return next(errorHandler(400, "no services found..."));
+        }
+        res.status(200).json({
+            services
+        })
+    } catch (error) {
+        next(error)
+    }
+}
