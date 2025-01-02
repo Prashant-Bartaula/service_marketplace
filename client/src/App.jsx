@@ -29,7 +29,7 @@ export default function App() {
           <Route element={<OnlyWorkerRoute/>}>
             <Route path='/create-post' element={<CreateService/>}/>
           </Route>
-          <Route path='/post/:postSlug' element={<ServicePage/>}/>
+          <Route path='/service/:serviceSlug' element={<ServicePage/>}/>
           <Route path='*' element={<NotFoundPage/>}/>
       </Routes>
       <Footer/>
