@@ -7,6 +7,7 @@ export default function ServicePage() {
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(false);
   const [worker, setWorker] = useState({});
+  const [relatedServices, setRelatedServices] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -55,6 +56,28 @@ export default function ServicePage() {
     }
   }, [post])
 
+  useEffect(()=>{
+    const getRelatedServices=async()=>{
+      setErrorMessage("");
+      try {
+        setLoading(true);
+        const res=await fetch(`http://localhost:5000/api/service/getServices?category=${post.category}&limit=4`);
+        const data=await res.json();
+        if(!res.ok){
+          return setErrorMessage(data.message)
+        }
+        setRelatedServices(()=>{
+          return data.services.filter(service=>service._id!==post._id)
+        });
+      } catch (error) {
+        setErrorMessage(error.message);
+      }finally{
+        setLoading(false);
+      }
+    }
+    getRelatedServices();
+  }, [post]);
+
   if (post.length === 0 && !loading) {
     return <NotFoundPage />;
   } else {
@@ -70,15 +93,15 @@ export default function ServicePage() {
         ></dotlottie-player>
       </div>
     ) : (
-      <div className="min-h-screen max-w-[1100px] justify-center flex flex-wrap mx-auto pt-[80px] px-3">
+      <div className="min-h-screen max-w-[1100px]  flex flex-wrap mx-auto pt-[80px] px-3">
         {/* left side  */}
-        <div className="flex-grow">
-          <div className="flex flex-col gap-10">
+        <div className="flex-grow px-3">
+          <div className="flex flex-col gap-10 ">
 
-            <div className="flex items-center flex-wrap md:flex-nowrap gap-5 max-w-[500px]">
+            <div className="flex items-center flex-wrap md:flex-nowrap gap-5 max-w-[600px]">
 
               {/* image */}
-              <div className="relative h-[250px] mx-auto w-full rounded-none md:h-[150px] md:w-[230px] md:rounded-full overflow-hidden order-1 md:order-none mt-4 md:mt-0">
+              <div className="relative h-[250px] mx-auto w-full rounded-none md:h-[150px] md:w-[180px] md:rounded-full overflow-hidden order-1 md:order-none mt-4 md:mt-0">
                 <img src={post.servicePic} alt={post?.title} className="h-full w-full  object-cover"/>
               </div>
 
@@ -104,19 +127,39 @@ export default function ServicePage() {
         </div>
 
         {/* right side  */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col  gap-8 w-full md:w-max
+         mt-[100px] md:mt-0">
           {/* top part  */}
-          <div className="flex flex-col gap-5 items-end">
+          <div className="flex flex-col  gap-5 lg:items-end">
             <h1 className="text-purple-500"><i className="fa-solid fa-user"></i><span className="ml-3"> {worker?.username}</span></h1>
             <h1 className="text-gray-600 tracking-wider"><i className="fa-solid fa-clock"></i><span className="ml-3">Available {
               worker?.workingHours==='early'?" 8:00AM to 10:00AM":worker?.workingHours==='afternoon'?"12:00PM to 3:00PM":"4:00PM to 6:00PM"
               }</span></h1>
 
-              <button className="w-full mt-14 text-center px-3 py-2
+              <button className="w-full md:mt-14 text-center px-3 py-2
                bg-purple-500 text-white rounded-lg"><i className="fa-solid fa-calendar"></i>&nbsp;&nbsp;Book Appointment</button>
+          </div>
+
+          {/* related services part  */}
+          <div className="relative">
+                <h1 className="font-semibold">Related Services</h1>
+                <div className="mt-8 flex flex-col md:flex-row gap-5 md:gap-8">
+                  {relatedServices.map((service, index) => (
+                      <div className="flex gap-2" key={index}>
+                          <img src={service.servicePic} alt="service pic" className="h-[100px] w-[80px] rounded-md object-cover"/>
+
+                          <div className="flex flex-col gap-1">
+                            <h1 className="font-bold text-lg">{service.title}</h1>
+                            <h1 className="text-purple-400 font-medium">{new Date(service.serviceDate).toDateString()}</h1>
+                            <h2 className="text-gray-400 text-sm">Rs. {service.price}</h2>
+                          </div>
+                      </div>
+                  ))}
+                </div>
           </div>
         </div>
       </div>
     );
   }
 }
+
