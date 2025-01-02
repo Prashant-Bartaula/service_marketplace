@@ -11,7 +11,12 @@ export const createService=async(req,res, next)=>{
     if(!title || !category || !description || !serviceDate || !price || title==='' || category==='' || description==='' || serviceDate==='' || price===''){
         return next(errorHandler(400, "fill all the required fields..."));
     }
-
+    
+    const currentTime=new Date();
+    const oneDayAhead=new Date(currentTime.getTime() + 6*60*60*1000);
+    if(new Date(serviceDate)<=oneDayAhead){
+        return next(errorHandler(400, "service date must be at least 6 hours ahead..."));
+    }
     const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
 
     const newService=new Service({

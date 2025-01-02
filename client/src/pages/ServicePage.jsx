@@ -32,7 +32,6 @@ export default function ServicePage() {
     getservice();
   }, [serviceSlug]);
 
-  console.log(service)
 
   useEffect(()=>{
     if(service){
