@@ -12,6 +12,7 @@ import Setting from './pages/Setting'
 import CreateService from './pages/CreateService'
 import ServicePage from './pages/ServicePage'
 import NotFoundPage from './components/NotFoundPage'
+import ProfilePage from './pages/ProfilePage'
 import './App.css'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path='/worker-sign-up' element={<WorkerSignUp/>}/>
           <Route element={<PrivateRoute/>}>
             <Route path='/setting' element={<Setting/>}/>
+            <Route path='/profile' element={<ProfilePage/>}/>
           </Route>
           <Route element={<OnlyWorkerRoute/>}>
             <Route path='/create-post' element={<CreateService/>}/>

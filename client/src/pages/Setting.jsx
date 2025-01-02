@@ -187,6 +187,12 @@ export default function Setting() {
 
           <input
             type="text"
+            defaultValue={currentUser?.email}
+            className="p-2 rounded-lg border border-gray-300 w-full"
+            readOnly
+          />
+          <input
+            type="text"
             defaultValue={currentUser?.username}
             onChange={(e) => handleChange(e)}
             className="p-2 rounded-lg border border-gray-300 w-full"
