@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AllServices from "../Users/Customer/AllServices";
+import Analytics from "../Users/Customer/Analytics";
+import Bookmarks from "../Users/Customer/Bookmarks";
 export default function CustomerProfile() {
   const { currentUser } = useSelector((state) => state.user);
   const [tab, setTab] = useState('all services');
@@ -19,8 +21,8 @@ export default function CustomerProfile() {
             />
           </div>
 
-          <div className="flex flex-col gap-2 text-[#76787b] tracking-wide">
-            <h1 className=" text-lg text-black font-medium">{currentUser?.username}</h1>
+          <div className="flex flex-col gap-4 text-[#76787b] tracking-wide">
+            <h1 className=" text-xl text-black font-medium">{currentUser?.username}</h1>
             <h1 className="text-sm">{currentUser?.phone}</h1>
             <h1>
               <i className="fa-solid fa-location-dot"></i>&nbsp;&nbsp;
@@ -50,8 +52,8 @@ export default function CustomerProfile() {
 
         <div className="mt-16">
           {tab === "all services" && <AllServices />}
-          {/* {tab === "analytics" && <Analytics />}
-          {tab === "bookmarks" && <Bookmarks />} */}
+          {tab === "analytics" && <Analytics />}
+          {tab === "bookmarks" && <Bookmarks />}
         </div>
       </div>
     </div>
