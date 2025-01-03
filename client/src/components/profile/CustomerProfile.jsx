@@ -22,7 +22,7 @@ export default function CustomerProfile() {
           </div>
 
           <div className="flex flex-col gap-4 text-[#76787b] tracking-wide">
-            <h1 className=" text-xl text-black font-medium">{currentUser?.username}</h1>
+            <h1 className=" text-3xl text-black font-medium">{currentUser?.username}</h1>
             <h1 className="text-sm">{currentUser?.phone}</h1>
             <h1>
               <i className="fa-solid fa-location-dot"></i>&nbsp;&nbsp;
