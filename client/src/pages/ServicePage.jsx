@@ -9,6 +9,7 @@ export default function ServicePage() {
   const [worker, setWorker] = useState({});
   const [relatedServices, setRelatedServices] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     const getservice = async () => {
@@ -79,6 +80,34 @@ export default function ServicePage() {
     getRelatedServices();
   }, [service]);
 
+
+  useEffect(()=>{
+    const localStorageData=JSON.parse(window.localStorage.getItem('services'))
+    if(localStorageData!=='null'){
+      localStorageData && localStorageData.filter(ser=>ser.serviceId===service._id)?setIsBookmarked(true):setIsBookmarked(false)
+    }
+  }, [service])
+
+  const handleBookmark=async(e)=>{
+    e.preventDefault();
+    const {slug, servicePic,title, price,  ...rest}=service;
+    const bookmarkData={
+      slug,
+      servicePic,
+      title,
+      price,
+    }
+    const localStorageData=window.localStorage.getItem('services');
+    if(localStorageData==='null'){
+      const data=JSON.parse(localStorageData);
+      data?.push(bookmarkData);
+      window.localStorage.setItem('services',JSON.stringify(data));
+    }else{
+      window.localStorage.setItem('services',JSON.stringify([bookmarkData]));
+    }
+    setIsBookmarked(!isBookmarked);
+  }
+
   if (service.length === 0 && !loading) {
     return <NotFoundPage />;
   } else {
@@ -96,7 +125,7 @@ export default function ServicePage() {
     ) : (
       <div className="min-h-screen max-w-[1100px]  flex flex-wrap mx-auto py-[80px] px-3">
         {/* left side  */}
-        <div className="flex-grow px-3">
+        <div className="relative flex-grow px-3">
           <div className="flex flex-col gap-10 ">
 
             <div className="flex items-center flex-wrap md:flex-nowrap gap-5 ">
@@ -124,6 +153,9 @@ export default function ServicePage() {
               <h1 className="text-2xl font-semibold">Price</h1>
               <p className="mt-2 text-[#77797c] font-normal tracking-wide text-md">Rs. {service.price}</p>
             </div>
+          </div>
+          <div className="absolute right-3 top-3 text-2xl text-purple-500">
+            <button onClick={(e)=>handleBookmark(e)}><i className={`fa-${isBookmarked ? "solid" : "regular"} fa-heart`}></i></button>
           </div>
         </div>
 

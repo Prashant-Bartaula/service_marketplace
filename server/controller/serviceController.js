@@ -90,11 +90,20 @@ export const getCustomerServices=async(req, res, next)=>{
 
     try {
         const services=await Service.find({bookerId:req.user.id});
+        const ongoingService=await Service.countDocuments({
+            bookerId:req.user.id,
+        })
+        const completedService=await Service.countDocuments({
+            bookerId:req.user.id,
+            isCompleted:true
+        })
         if(!services){
             return next(errorHandler(400, "no services found..."));
         }
         res.status(200).json({
-            services
+            services,
+            ongoingService,
+            completedService
         })
     } catch (error) {
         next(error)
