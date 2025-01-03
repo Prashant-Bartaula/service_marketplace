@@ -83,8 +83,10 @@ export default function ServicePage() {
 
   useEffect(()=>{
     const localStorageData=JSON.parse(window.localStorage.getItem('services'))
-    if(localStorageData!=='null'){
+    if(localStorageData.length!==0){
       localStorageData && localStorageData.filter(ser=>ser.serviceId===service._id)?setIsBookmarked(true):setIsBookmarked(false)
+    }else{
+      setIsBookmarked(false)
     }
   }, [service])
 
@@ -97,13 +99,17 @@ export default function ServicePage() {
       title,
       price,
     }
-    const localStorageData=window.localStorage.getItem('services');
-    if(localStorageData==='null'){
-      const data=JSON.parse(localStorageData);
-      data?.push(bookmarkData);
-      window.localStorage.setItem('services',JSON.stringify(data));
+    const localStorageData=JSON.parse(window.localStorage.getItem('services'));
+    if(!isBookmarked){
+      if(localStorageData.length!==0){
+        localStorageData.push(bookmarkData);
+        window.localStorage.setItem('services',JSON.stringify(data));
+      }else{
+        window.localStorage.setItem('services',JSON.stringify([bookmarkData]));
+      }
     }else{
-      window.localStorage.setItem('services',JSON.stringify([bookmarkData]));
+      const dataAfterRemoveBookmark=localStorageData.filter(prev=>prev.slug!==service.slug);
+      window.localStorage.setItem('services',JSON.stringify(dataAfterRemoveBookmark));
     }
     setIsBookmarked(!isBookmarked);
   }
