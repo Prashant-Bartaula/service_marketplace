@@ -9,9 +9,9 @@ export default function CustomerProfile() {
   const [tab, setTab] = useState('all services');
 
   return (
-    <div className="relatiev z-10 min-h-screen max-w-[1000px] gap-5 mx-auto flex flex-col py-[70px]">
+    <div className="relatiev z-10 min-h-screen max-w-[1200px] gap-5 mx-auto flex flex-col py-[70px] md:flex-row">
       {/* left side  */}
-      <div className="relative">
+      <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-20">
         <div className="flex gap-3 items-center">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
             <img
@@ -31,9 +31,9 @@ export default function CustomerProfile() {
           </div>
         </div>
 
-        <div className="mt-12 flex gap-6 items-center">
+        <div className="mt-12 flex flex-wrap gap-6 items-center">
           <Link to="/setting">
-            <button className="bg-purple-500 text-white px-5 py-2 rounded-lg duration-200 hover:bg-purple-600">
+            <button className="bg-purple-500 text-white px-5 py-2 rounded-lg duration-200 hover:bg-purple-600 text-nowrap">
               Complete Profile
             </button>
           </Link>
@@ -42,7 +42,7 @@ export default function CustomerProfile() {
 
       {/* right side  */}
       <div className="relative">
-        <div>
+        <div className="overflow-x-scroll text-nowrap">
             <ul className="flex gap-4 text-[#76787b] font-serif border-b-[1px]">
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='all services' && 'profileLinks'}`} onClick={()=>setTab('all services')}>All services</li>
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='analytics' && 'profileLinks'}`} onClick={()=>setTab('analytics')}>Analytics</li>
@@ -59,3 +59,5 @@ export default function CustomerProfile() {
     </div>
   );
 }
+
+

@@ -18,6 +18,10 @@ const serviceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isBooked:{
+      type:Boolean,
+      default:false
+    },
     bookerId: {
       type: String,
       default: "",

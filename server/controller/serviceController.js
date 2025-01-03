@@ -109,3 +109,31 @@ export const getCustomerServices=async(req, res, next)=>{
         next(error)
     }
 }
+
+export const getWorkerServices=async(req, res, next)=>{
+    if(!req.user || !req.user.role==='worker'){
+        return next(errorHandler(401, "unauthorized"));
+    }
+    try {
+        const services=await Service.find({workerId:req.user.id});
+        const ongoingService=await Service.countDocuments({
+            isBooked:true,
+            workerId:req.user.id
+        })
+        const completedService=await Service.countDocuments({
+            isCompleted:true,
+            workerId:req.user.id
+        })
+        if(!services){
+            return next(errorHandler(400, "no services found..."));
+        }
+
+        res.status(200).json({
+            services,
+            ongoingService,
+            completedService
+        })
+    } catch (error) {
+        next(error);
+    }
+}

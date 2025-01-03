@@ -1,6 +1,5 @@
 
 export default function Rating({rating}) {
-  console.log(rating)
   return (
     <div className="flex gap-1 text-gray-500">
         <span ><i className={`fa-${rating >= 1 ? "solid" : "regular"} fa-star ${rating>=1 && 'text-yellow-500'}`}></i></span>
