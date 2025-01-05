@@ -7,12 +7,12 @@ import ManageServices from "../Users/Worker/ManageServices";
 import Rating from "../Rating";
 export default function WorkerProfile() {
   const { currentUser } = useSelector((state) => state.user);
-  const [tab, setTab] = useState('all services');
+  const [tab, setTab] = useState('my services');
 
   return (
-    <div className="relatiev z-10 min-h-screen max-w-[1200px] gap-5 mx-auto flex flex-col py-[70px] md:flex-row ">
+    <div className="relatiev z-10 min-h-screen max-w-[1250px] gap-5 mx-auto flex flex-col py-[70px] md:flex-row ">
       {/* left side  */}
-      <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-6">
+      <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-6 w-max">
         <div className="flex gap-3 items-center">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
             <img
@@ -46,18 +46,16 @@ export default function WorkerProfile() {
       <div className="relative">
         <div className="overflow-x-scroll text-nowrap">
             <ul className="flex gap-4 text-[#76787b] font-serif border-b-[1px]">
-              <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='all services' && 'profileLinks'}`} onClick={()=>setTab('all services')}>All services</li>
+              <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='my services' && 'profileLinks'}`} onClick={()=>setTab('my services')}>My services</li>
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='analytics' && 'profileLinks'}`} onClick={()=>setTab('analytics')}>Analytics</li>
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='manage' && 'profileLinks'}`} onClick={()=>setTab('manage')}>Manage Services</li>
-              <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='posted' && 'profileLinks'}`} onClick={()=>setTab('posted')}>Posted</li>
             </ul>
         </div>
 
         <div className="mt-16">
-          {tab === "all services" && <AllServices />}
+          {tab === "my services" && <AllServices />}
           {tab === "analytics" && <Analytics />}
           {tab === "manage" && <ManageServices/>}
-          {tab === "expired" && <div>Expired</div>}
         </div>
       </div>
     </div>

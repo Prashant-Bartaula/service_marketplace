@@ -29,15 +29,17 @@ export default function AllServices() {
         {services.length===0 || errorMessage?(
             <h1 className="text-2xl text-gray-300 text-center mt-24">No services found...</h1>
         ):(
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap gap-4  justify-center">
                 {services?.map((service, index)=>{
                     return (
-                        <div key={index} className="flex flex-col gap-3 w-min relative tracking-wide">
-                               <Link to={`/service/${service.slug}`}><img src={service.servicePic} alt="service-pic" className="h-auto max-h-[150px] min-w-[200px] max-w-[300px] object-cover rounded-lg"/></Link>
+                        <div key={index} className="flex flex-col gap-3 relative tracking-wide shadow-xl px-2
+                         py-4 rounded-xl overflow-hidden">
+                               <Link to={`/service/${service.slug}`}><img src={service.servicePic} alt="service-pic" className="h-[150px] w-[300px] md:w-[250px] object-cover rounded-lg"/></Link>
                                <h1 className="text-sm font-semibold ">{service.title.slice(0, 50)}</h1>
                                <h2 className="text-sm ">Rs. {service.price}</h2>
                                {
-                                  service.isCompleted?<div className="absolute top-0  left-0 text-gray-100 bg-black bg-opacity-50 w-full h-full z-50 flex justify-center items-center rounded-xl text-2xl">Completed</div>:null
+                                  service.isCompleted?(<div className="absolute bottom-0  right-0 z-50 bg-green-500 text-white text-sm px-2 py-1">Completed</div>):service.isBooked?(
+                                      <div className="absolute bottom-0  right-0 z-50 bg-yellow-500 text-white text-sm px-2 py-1">Ongoing</div>):null
                                }
                         </div>
                     )

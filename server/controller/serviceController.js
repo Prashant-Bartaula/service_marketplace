@@ -116,6 +116,11 @@ export const getWorkerServices=async(req, res, next)=>{
     }
     try {
         const services=await Service.find({workerId:req.user.id});
+        let totalIncome=0;
+        services.forEach(element => {
+            element.isCompleted && (totalIncome+=element.price);
+        });
+        const postedServices=await Service.countDocuments({workerId:req.user.id});
         const ongoingService=await Service.countDocuments({
             isBooked:true,
             workerId:req.user.id
@@ -131,7 +136,9 @@ export const getWorkerServices=async(req, res, next)=>{
         res.status(200).json({
             services,
             ongoingService,
-            completedService
+            completedService,
+            postedServices,
+            totalIncome
         })
     } catch (error) {
         next(error);
