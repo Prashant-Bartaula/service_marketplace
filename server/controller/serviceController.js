@@ -144,3 +144,17 @@ export const getWorkerServices=async(req, res, next)=>{
         next(error);
     }
 }
+
+export const deleteService=async(req, res, next)=>{
+    if(!req.user.id===req.params.workerId || !req.user.role==='worker'){
+        return next(errorHandler(401, "unauthorized"));
+    }
+    try {
+        await Service.findByIdAndDelete(req.params.serviceId);
+        res.status(200).json({
+            message:"service deleted successfully"
+        })
+    } catch (error) {
+        next(error)
+    }
+}

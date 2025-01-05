@@ -12,7 +12,7 @@ export default function WorkerProfile() {
   return (
     <div className="relatiev z-10 min-h-screen max-w-[1250px] gap-5 mx-auto flex flex-col py-[70px] md:flex-row ">
       {/* left side  */}
-      <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-6 w-max">
+      <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-6 md:min-w-[400px]">
         <div className="flex gap-3 items-center">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
             <img
@@ -43,7 +43,7 @@ export default function WorkerProfile() {
       </div>
 
       {/* right side  */}
-      <div className="relative">
+      <div className="flex-grow relative overflow-x-scroll">
         <div className="overflow-x-scroll text-nowrap">
             <ul className="flex gap-4 text-[#76787b] font-serif border-b-[1px]">
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='my services' && 'profileLinks'}`} onClick={()=>setTab('my services')}>My services</li>
@@ -52,7 +52,7 @@ export default function WorkerProfile() {
             </ul>
         </div>
 
-        <div className="mt-16">
+        <div className="mt-16 w-full">
           {tab === "my services" && <AllServices />}
           {tab === "analytics" && <Analytics />}
           {tab === "manage" && <ManageServices/>}
