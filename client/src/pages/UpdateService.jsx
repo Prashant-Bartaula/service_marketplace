@@ -117,7 +117,7 @@ const handleChange = (e) => {
         }
         console.log(data)
         navigate(`/service/${data.updatedService.slug}`)
-    } catch (error) {
+    } catch (error){
       setUpdating(false);
       setErrorMessage(error.message);
     }
