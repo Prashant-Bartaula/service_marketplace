@@ -54,7 +54,8 @@ const handleDelete=async()=>{
     setModelOpen(false);
   }
 }
-  return errorMessage?(<h1 className="text-2xl text-gray-300 text-center mt-24">{errorMessage}</h1>):(
+
+  return errorMessage || services.length===0?(<h1 className="text-2xl text-gray-300 text-center mt-24">Services not found</h1>):(
     <>
 <div className="flex flex-col gap-6 w-full  overflow-scroll">
     {services.map((service, index)=>{
