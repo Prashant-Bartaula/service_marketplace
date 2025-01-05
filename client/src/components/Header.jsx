@@ -9,15 +9,21 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const [dropdownActive, setDropdownActive] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [tab, setTab]=useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location=useLocation();
 
+  const handleResize = () => {
+    if(window.innerWidth>1024){
+      return setSidebarOpen(true);
+    }
+    setSidebarOpen(false);
+  }
 
   useEffect(() => {
-    setSidebarOpen(false);
+    handleResize();
     if(location.pathname==='/'){
       return setTab('');
     }
@@ -28,14 +34,8 @@ export default function Header() {
     }
   }, [location])
 
-  useEffect(() => {
 
-    const handleResize = () => {
-      if(window.innerWidth>1024){
-        return setSidebarOpen(true);
-      }
-      setSidebarOpen(false);
-    }
+  useEffect(() => {
     handleResize();
 
     window.addEventListener("resize",handleResize);
@@ -81,15 +81,15 @@ export default function Header() {
         <div className={`flex flex-col lg:flex-row fixed lg:relative right-0 top-0 bg-white border-l-2 border-gray-300 lg:border-none px-9 py-[100px] lg:p-0  gap-12 lg:gap-0 h-full lg:h-fit z-50 flex-grow justify-start lg:justify-between transition-all duration-200 ease-linear ${sidebarOpen?'sidebarOpen': 'sidebarClose'}`}>
           {/* navigation */}
           <div className="flex items-center order-2 lg:order-none">
-              <ul className="flex flex-col lg:flex-row gap-3 text-[#76787b] text-lg transition-all duration-200 ease-linear">
-                <li className={`hover:text-purple-500 cursor-pointer py-2 relative ${tab==='' && 'navLinks'}`} onClick={() => navigate("/")}>Home</li>
-                <li className={`hover:text-purple-500 cursor-pointer py-2 relative ${tab==='about' && 'navLinks'}`} onClick={() => navigate("/about")}>About</li>
-                <li className={`hover:text-purple-500 cursor-pointer py-2 relative ${tab==='contact' && 'navLinks'}`}onClick={() => navigate("/contact")}>Contact</li>
+              <ul className="flex flex-col lg:flex-row gap-3 lg:gap-10 text-[#76787b] text-lg transition-all duration-200 ease-linear">
+                <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='' && 'navLinks'}`} onClick={() => navigate("/")}>Home</li>
+                <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='about' && 'navLinks'}`} onClick={() => navigate("/about")}>About</li>
+                <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='contact' && 'navLinks'}`}onClick={() => navigate("/contact")}>Contact</li>
               </ul>
           </div>
 
           {/* search  */}
-          <form className="px-4 py-2 rounded-2xl border-[1px] border-gray-700 order-1">
+          <form className="px-4 py-2 rounded-2xl border-[1px] border-gray-700 order-1 lg:order-none text-nowrap">
             <input
               type="text"
               placeholder="Search anything... "
@@ -102,7 +102,7 @@ export default function Header() {
 
         {currentUser ? (
           <div
-            className="relative cursor-pointer order-3 mt-5"
+            className="relative cursor-pointer order-3 lg:order-none mt-5 lg:mt-0"
             onClick={() => setDropdownActive(!dropdownActive)}
           >
             <img
@@ -159,7 +159,7 @@ export default function Header() {
             </div>
           </div>
         ) : (
-          <div className="hidden md:flex gap-10 items-center order-3 mt-5">
+          <div className="hidden md:flex gap-10 items-center order-3 lg:order-none mt-5 lg:mt-0">
             <Link to="/sign-in">
               <button className="tracking-wider text-lg font-medium text-nowrap font-rubik hover:text-purple-700 transition-all duration-200 ease-linear">
                 login
