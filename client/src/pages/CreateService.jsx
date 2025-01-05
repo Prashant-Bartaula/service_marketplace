@@ -13,6 +13,7 @@ export default function CreateService() {
   const [formData, setFormData] = useState({});
 const navigate=useNavigate();
 
+
   const handleServiceImageFile = (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -140,7 +141,7 @@ const navigate=useNavigate();
               Cleaning
             </option>
             <option value="plumbing">Plumbing</option>
-            <option value="Electrical">Electrical</option>
+            <option value="electrical">Electrical</option>
             <option value="repair">Repair</option>
             <option value="painting">Painting</option>
             <option value="shifting">Shifting</option>

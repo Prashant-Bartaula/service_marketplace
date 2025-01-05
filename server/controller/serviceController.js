@@ -160,7 +160,8 @@ export const deleteService=async(req, res, next)=>{
 }
 
 export const updateService=async(req, res, next)=>{
-    const {title, category, description, serviceDate, servicePic, price}=req.body;
+    const  {title, category, description, serviceDate, servicePic, price}=req.body;
+    let {slug}=req.body;
     if(!req.user.id===req.params.workerId || !req.user.role==='worker'){
         return next(errorHandler(401, "unauthorized"));
     }
@@ -173,22 +174,24 @@ export const updateService=async(req, res, next)=>{
     if(new Date(serviceDate)<=oneDayAhead){
         return next(errorHandler(400, "service date must be at least 6 hours ahead..."));
     }
-    const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`;
     try {
         const service=await Service.findById(req.params.serviceId);
         if(service.isCompleted || service.isBooked){
             return next(errorHandler(400, "service is under progress or completed, cant be updated..."));
         }
+        if(service.title!==title){
+            slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
+        }
         const updatedService= await Service.findByIdAndUpdate(req.params.serviceId, {
             $set:{
-                title, category, description, serviceDate, servicePic:servicePic || undefined, price:parseInt(price), slug
+                title, category, description, serviceDate, servicePic:servicePic || undefined, price:parseInt(price), slug:slug
             }
         }, {new:true});
         if(!updatedService){
             return next(errorHandler(401, "service could not be updated..."));
         }
         res.status(200).json({
-            updateService
+            updatedService
         })
     } catch (error) {
         next(error)

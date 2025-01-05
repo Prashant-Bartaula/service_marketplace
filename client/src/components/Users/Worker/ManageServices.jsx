@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import {useSelector} from "react-redux"
 import Model from "../../Model";
 export default function ManageServices() {
@@ -10,6 +10,7 @@ export default function ManageServices() {
   const [serviceId, setServiceId] = useState("");
   const [modelOpen, setModelOpen] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
+  const navigate=useNavigate();
 
   useEffect(()=>{
     const getServices=async()=>{
@@ -57,7 +58,7 @@ const handleDelete=async()=>{
 
   return errorMessage || services.length===0?(<h1 className="text-2xl text-gray-300 text-center mt-24">Services not found</h1>):(
     <>
-<div className="flex flex-col gap-6 w-full  overflow-scroll">
+<div className="flex flex-col gap-6 w-full  overflow-x-scroll">
     {services.map((service, index)=>{
       return (
         <div className="flex flex-row gap-12 items-center border-b-2 border-gray-300 p-4" key={index}>
@@ -75,7 +76,7 @@ const handleDelete=async()=>{
                     setServiceId(service._id);
                     setModelOpen(true);
                 }} className="text-sm text-gray-400 cursor-pointer">Delete</button>
-                <button className="text-sm text-gray-400 cursor-pointer">Edit</button>
+                <button className="text-sm text-gray-400 cursor-pointer" onClick={()=>navigate(`/update-service/${service.slug}`)} >Edit</button>
             </div>
             {service.isCompleted?<span className="text-sm text-green-500">Completed</span>:service.isBooked?<h1 className="text-sm text-yellow-500">Booked</h1>:null}
         </div>
