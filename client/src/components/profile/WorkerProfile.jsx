@@ -43,7 +43,7 @@ export default function WorkerProfile() {
       </div>
 
       {/* right side  */}
-      <div className="flex-grow relative overflow-x-scroll">
+      <div className="flex-grow  overflow-x-scroll">
         <div className="overflow-x-scroll text-nowrap">
             <ul className="flex gap-4 text-[#76787b] font-serif border-b-[1px]">
               <li className={`hover:text-black cursor-pointer py-3 px-2 relative ${tab==='my services' && 'profileLinks'}`} onClick={()=>setTab('my services')}>My services</li>
