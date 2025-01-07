@@ -30,6 +30,10 @@ const serviceSchema = new mongoose.Schema(
       type:Date,
       required:true
     },
+    serviceTime:{
+      type:String,
+      required:true,
+    },
     servicePic: {
       type: String,
       default:
