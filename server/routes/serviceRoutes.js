@@ -4,7 +4,7 @@ import {createService, getServices, getCustomerServices, getWorkerServices, dele
 
 const router=express.Router();
 
-router.post('/create', verifyUser, createService);
+router.post('/create/:username', verifyUser, createService);
 router.get('/getServices', getServices);
 router.get('/getTrendingServices', getTrendingServices)
 router.post('/getCustomerServices', verifyUser, getCustomerServices);

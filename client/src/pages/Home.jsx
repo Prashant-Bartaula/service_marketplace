@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useSubmit } from "react-router-dom";
 import moment from "moment";
 export default function Home() {
   const [tab, setTab] = useState("");
@@ -9,6 +9,12 @@ export default function Home() {
   const [recentError, setRecentError] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [filterOpen, setFilterOpen]=useState(false);
+  const [order, setOrder]=useState('');
+  const [priceOrder, setPriceOrder]=useState('');
+  const [min, setMin]=useState('');
+  const [max, setMax]=useState('');
+  const [filtered, setFiltered]=useState(false);
   const [services, setServices] = useState([]);
   const location = useLocation();
   // const isInitialRender = useRef(true);
@@ -67,7 +73,7 @@ export default function Home() {
       try {
         setLoading(true);
         const res = await fetch(
-          `http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&limit=10`
+          `http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&order=${order}&priceOrder=${priceOrder}&min=${min}&max=${max}&limit=10`
         );
         const data = await res.json();
         if (!res.ok) {
@@ -78,10 +84,11 @@ export default function Home() {
         setError(err);
       } finally {
         setLoading(false);
+        setFiltered(false);
       }
     };
     fetchServices();
-  }, [tab]);
+  }, [tab, filtered]);
 
   return (
     <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px]">
@@ -175,14 +182,46 @@ export default function Home() {
       {/* right side  */}
       <div className="mt-[100px] relative flex flex-col gap-4 sm:mt-0 sm:flex-grow sm:pl-8 ">
         {/* category text  */}
-        <div className="pb-1 border-b border-gray-300 flex  justify-between items-center">
+        <div className="pb-1 border-b border-gray-300 flex flex-col justify-start items-start">
+
+            <div className="flex justify-between w-full">
           <h1 className="text-lg text-gray-700 font-normal tracking-wide">{`Category : ${
             tab ? tab : "All"
           }`}</h1>
-          <button className="text-gray-500 px-3 py-1 bg-gray-200 rounded-2xl shadow-md hover:bg-gray-300 transition-all ease-linear duration-200 text-sm">
+          <button className="text-gray-500 px-3 py-1 bg-gray-200 rounded-2xl shadow-md hover:bg-gray-300 transition-all ease-linear duration-200 text-sm" onClick={()=>setFilterOpen(!filterOpen)}>
             <i className="fa-solid fa-filter"></i>
             <span className="ml-3">Filter</span>
           </button>
+            </div>
+
+          {/* filtering  */}
+          <div className={`${!filterOpen?'block':'hidden'} flex gap gap-6 flex-wrap justify-start my-6 transition-all duration-200 ease-linear`}>
+            <div>
+            <label htmlFor="order">SortBy: </label>
+            <select name="order" className="ml-3 cursor-pointer border border-gray-300 p-2 rounded-lg" onChange={(e)=>setOrder(e.target.value)}>
+              <option value="">none</option>
+              <option value="asc">asc</option>
+              <option value="desc">desc</option>
+            </select>
+            </div>
+
+            <div>
+            <label htmlFor="priceOrder">Price Order: </label>
+            <select name="priceOrder" className="ml-3 cursor-pointer border border-gray-300 p-2 rounded-lg" onChange={(e)=>setPriceOrder(e.target.value)}>
+              <option value="">none</option>
+              <option value="asc">asc</option>
+              <option value="desc">desc</option>
+            </select>
+            </div>
+
+            <div>
+              <label htmlFor="price">Price: </label>
+              <input type="number" className="placeholder:font-serif border border-gray-300 p-2 rounded-lg w-[100px] mr-1" placeholder="Rs.  min" onChange={(e)=>setMin(e.target.value)}/>
+              <span> - </span>
+              <input type="number" className=" ml-1 placeholder:font-serif border border-gray-300 p-2 rounded-lg w-[100px]" placeholder="Rs.  max" onChange={(e)=>setMax(e.target.value)}/>
+            </div>
+            <button type="submit" className="px-3 py-1 bg-gray-200 rounded-2xl shadow-md hover:bg-gray-300 transition-all ease-linear duration-200 text-sm" onClick={()=>setFiltered(true)}><i className="fa-solid fa-filter"></i><span className="ml-3">Filter</span></button>
+          </div>
         </div>
 
         {/* trending  */}
@@ -329,7 +368,7 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex justify-between text-gray-500">
-                    <button>ram sharan</button>
+                    <button>{service.workerUsername}</button>
                     <button>
                       <i className={`fa-regular fa-bookmark`}></i>
                     </button>

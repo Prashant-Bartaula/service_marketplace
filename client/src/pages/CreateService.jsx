@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
+import {useSelector} from 'react-redux';
 import axios from "axios";
 
 export default function CreateService() {
@@ -11,6 +12,7 @@ export default function CreateService() {
   const [imageUploadSuccess, setImageUploadSuccess] = useState("");
   const [servicePicImageFile, setServicePicImageFile] = useState("");
   const [formData, setFormData] = useState({});
+  const {currentUser}=useSelector((state)=>state.user);
 const navigate=useNavigate();
 
 
@@ -77,7 +79,7 @@ const navigate=useNavigate();
 
     try {
       setCreating(true);
-        const res=await fetch(`http://localhost:5000/api/service/create`,{
+        const res=await fetch(`http://localhost:5000/api/service/create/${currentUser?.username}`,{
           method:"POST",
           headers:{
             'Content-type': 'application/json'

@@ -20,7 +20,7 @@ export const createService=async(req,res, next)=>{
     const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
 
     const newService=new Service({
-        title, category, description, serviceDate,serviceTime, servicePic:servicePic || undefined, price:parseInt(price), workerId:req.user.id, slug
+        title, category, description, serviceDate,serviceTime, servicePic:servicePic || undefined, price:parseInt(price), workerId:req.user.id,workerUsername:req.params.username, slug
     });
 
     try {
@@ -41,7 +41,6 @@ export const getServices=async(req, res, next)=>{
     try {
         const startIndex=req.query.startIndex || 0;
         const limit= req.query.limit || 10;
-        const sortDirection=req.query.order==='asc'?1:-1
         if(req.query.slug){
             await Service.findOneAndUpdate({slug:req.query.slug}, {$inc:{views:1}});
         }
@@ -49,6 +48,8 @@ export const getServices=async(req, res, next)=>{
             ...(req.query.category && {category:req.query.category}),
             ...(req.query.slug && {slug:req.query.slug}),
             ...(req.query.workerId && {workerId:req.query.workerId}),
+            ...(req.query.min && {price:{$gte:parseInt(req.query.min)}}),
+            ...(req.query.max && {price:{$lte:parseInt(req.query.max)}}),
             ...(req.query.searchTerm && {
                     $or:[
                         {title:{$regex:req.query.searchTerm, $options:"i"}},
@@ -56,7 +57,8 @@ export const getServices=async(req, res, next)=>{
                     ]
             })
         }).sort({
-            createdAt:sortDirection
+            ...(req.query.priceOrder!=='' && {price:req.query.priceOrder==="asc"?1:-1}),
+            ...(req.query.order!=='' && {createdAt:req.query.order==="asc"?1:-1}),
         }).skip(startIndex).limit(limit);
 
         const totalServices=await Service.countDocuments();
