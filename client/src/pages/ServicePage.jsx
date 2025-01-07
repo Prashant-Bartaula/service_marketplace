@@ -77,11 +77,16 @@ export default function ServicePage() {
 
 
   useEffect(()=>{
-    const localStorageData=JSON.parse(window.localStorage.getItem('services'))
-    if(localStorageData.length!==0){
-      localStorageData && localStorageData.filter(ser=>ser.serviceId===service._id)?setIsBookmarked(true):setIsBookmarked(false)
-    }else{
-      setIsBookmarked(false)
+    if(service){
+      const localStorageData=JSON.parse(window.localStorage.getItem('services'))
+      if(localStorageData.length!==0){
+        const data=localStorageData.filter(prev=>prev.slug===service.slug)
+        if(data.length!==0){
+          setIsBookmarked(true)
+        }
+      }else{
+        setIsBookmarked(false)
+      }
     }
   }, [service])
 
@@ -98,7 +103,7 @@ export default function ServicePage() {
     if(!isBookmarked){
       if(localStorageData.length!==0){
         localStorageData.push(bookmarkData);
-        window.localStorage.setItem('services',JSON.stringify(data));
+        window.localStorage.setItem('services',JSON.stringify(localStorageData));
       }else{
         window.localStorage.setItem('services',JSON.stringify([bookmarkData]));
       }

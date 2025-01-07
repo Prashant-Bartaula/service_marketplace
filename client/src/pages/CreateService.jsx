@@ -76,7 +76,6 @@ const navigate=useNavigate();
     e.preventDefault();
     e.stopPropagation();
     setErrorMessage("");
-
     try {
       setCreating(true);
         const res=await fetch(`http://localhost:5000/api/service/create/${currentUser?.username}`,{

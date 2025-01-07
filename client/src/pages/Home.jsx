@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation, Link, useSubmit } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import moment from "moment";
 export default function Home() {
   const [tab, setTab] = useState("");
@@ -16,6 +16,7 @@ export default function Home() {
   const [max, setMax]=useState('');
   const [filtered, setFiltered]=useState(false);
   const [services, setServices] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
   const location = useLocation();
   // const isInitialRender = useRef(true);
 
@@ -27,7 +28,7 @@ export default function Home() {
     setTab("");
   }, [location.pathname]);
 
-  //trending
+  //trendingpservices
   useEffect(() => {
     setTrendingError("");
     const fetchTrending = async () => {
@@ -76,13 +77,13 @@ export default function Home() {
           `http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&order=${order}&priceOrder=${priceOrder}&min=${min}&max=${max}&limit=10`
         );
         const data = await res.json();
-        if (!res.ok) {
+        if (!res.ok){
           setError(data.message);
         }
         setServices(data.services);
-      } catch (error) {
+      }catch (error){
         setError(err);
-      } finally {
+      }finally{
         setLoading(false);
         setFiltered(false);
       }
@@ -90,6 +91,58 @@ export default function Home() {
     fetchServices();
   }, [tab, filtered]);
 
+
+  useEffect(()=>{
+    if(trending.length!==0 || services.length!==0 || recent.length!==0){
+      const localStorageData=JSON.parse(window.localStorage.getItem('services'))
+      if(localStorageData.length!==0){
+        localStorageData.forEach(item=>{
+          trending.forEach(service=>{
+            if(item.slug===service.slug){
+              setBookmarks(prev=>[...prev, service.slug]);
+            }
+          })
+          recent.forEach(service=>{
+            if(item.slug===service.slug){
+              setBookmarks(prev=>[...prev, service.slug]);
+            }
+          })
+          services.forEach(service=>{
+            if(item.slug===service.slug){
+              setBookmarks(prev=>[...prev, service.slug]);
+            }
+          })
+        })
+      }else{
+        return
+      }
+    }
+  }, [services])
+  const handleBookmark=(e, service)=>{
+    e.preventDefault();
+    const {slug, servicePic,title, price,  ...rest}=service;
+    const bookmarkData={
+      slug,
+      servicePic,
+      title,
+      price,
+    }
+    const localStorageData=JSON.parse(window.localStorage.getItem('services')) || [];
+    if(!bookmarks.includes(service.slug)){
+      if(localStorageData.length!==0){
+        localStorageData.push(bookmarkData);
+      }else{
+        localStorageData.push(bookmarkData);
+      }
+      window.localStorage.setItem('services',JSON.stringify(localStorageData));
+      setBookmarks(prev=>[...prev, service.slug]);
+    }else{
+      const dataAfterRemoveBookmark=localStorageData.filter(prev=>prev.slug!==service.slug);
+      window.localStorage.setItem('services',JSON.stringify(dataAfterRemoveBookmark));
+      setBookmarks(prev=>prev.filter(slug=>slug!==service.slug));
+    }
+  }
+ 
   return (
     <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px]">
       {/* left side  */}
@@ -162,7 +215,7 @@ export default function Home() {
               setTab((prev) => (prev === "Plumbing" ? "" : "Plumbing"))
             }
           >
-            <i className="fa-solid fa-truck"></i>
+            <i className="fa-solid fa-toilet"></i>
             <span className="ml-3">Plumbing</span>
           </button>
           <button
@@ -173,7 +226,7 @@ export default function Home() {
               setTab((prev) => (prev === "Electrical" ? "" : "Electrical"))
             }
           >
-            <i className="fa-solid fa-truck"></i>
+            <i className="fa-solid fa-bolt"></i>
             <span className="ml-3">Electrical</span>
           </button>
         </div>
@@ -195,7 +248,7 @@ export default function Home() {
             </div>
 
           {/* filtering  */}
-          <div className={`${!filterOpen?'block':'hidden'} flex gap gap-6 flex-wrap justify-start my-6 transition-all duration-200 ease-linear`}>
+          <div className={`${filterOpen?'block':'hidden'} flex gap gap-6 flex-wrap justify-start my-6 transition-all duration-200 ease-linear`}>
             <div>
             <label htmlFor="order">SortBy: </label>
             <select name="order" className="ml-3 cursor-pointer border border-gray-300 p-2 rounded-lg" onChange={(e)=>setOrder(e.target.value)}>
@@ -255,8 +308,8 @@ export default function Home() {
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                      <button>
-                        <i className={`fa-regular fa-heart`}></i>
+                      <button onClick={(e) => handleBookmark(e, service)} >
+                        <i className={`fa-${bookmarks.includes(service.slug) ? "solid" : "regular"} fa-heart`}></i>
                       </button>
                     </div>
                     <Link
@@ -303,8 +356,8 @@ export default function Home() {
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                      <button>
-                        <i className={`fa-regular fa-heart`}></i>
+                      <button onClick={(e) => handleBookmark(e, service)} >
+                        <i className={`fa-${bookmarks.includes(service.slug) ? "solid" : "regular"} fa-heart`}></i>
                       </button>
                     </div>
                     <Link
@@ -369,9 +422,9 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <button>{service.workerUsername}</button>
-                    <button>
-                      <i className={`fa-regular fa-bookmark`}></i>
-                    </button>
+                    <button onClick={(e) => handleBookmark(e, service)} >
+                        <i className={`fa-${bookmarks.includes(service.slug) ? "solid" : "regular"} fa-bookmark`}></i>
+                      </button>
                   </div>
                 </div>
                 
