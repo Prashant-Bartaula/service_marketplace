@@ -145,7 +145,6 @@ const navigate=useNavigate();
             <option value="repair">Repair</option>
             <option value="painting">Painting</option>
             <option value="shifting">Shifting</option>
-            <option value="laundry">Laundry</option>
           </select>
         </div>
 

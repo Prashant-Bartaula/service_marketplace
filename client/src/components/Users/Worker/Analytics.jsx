@@ -31,11 +31,7 @@ export default function Analytics() {
     };
     getService();
   }, []);
-  return errorMessage ? (
-    <div className="text-center text-3xl text-gray-400">
-      Internal Server Error
-    </div>
-  ) : (
+  return (
     <div className="relative flex flex-wrap gap-5 justify-center max-w-[700px]">
       <div className="flex flex-col items-center  min-w-[200px] w-[45%] py-4 gap-2 text-gray-400 border-[2px] border-gray-200">
         <h1 className="text-2xl font-semibold">{completedService}</h1>

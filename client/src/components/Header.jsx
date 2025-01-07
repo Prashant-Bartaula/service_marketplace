@@ -25,12 +25,15 @@ export default function Header() {
   useEffect(() => {
     handleResize();
     if(location.pathname==='/'){
-      return setTab('');
+      return setTab('/');
     }
     if(location.pathname==='/about'){
-      setTab('about');
+      return setTab('about');
+    }
+    if(location.pathname==='/contact'){
+      return setTab('contact');
     }else{
-      setTab('contact');
+      setTab('')
     }
   }, [location])
 
@@ -63,7 +66,7 @@ export default function Header() {
 
   return (
     <>
-      <div className=" flex items-center justify-between gap-24 px-4 py-10">
+      <div className=" flex items-center justify-between gap-24 xs:px-4 py-10">
         {/* logo wrapper  */}
         <div className="flex gap-6 items-center">
           <img
@@ -71,7 +74,7 @@ export default function Header() {
             alt="logo"
             className="h-10 w-10 scale-[2.5] translate-y-2"
           />
-          <span className="text-3xl font-rubik hidden xs:block">
+          <span className="text-2xl font-rubik  xs:text-3xl">
             Marketplace
           </span>
         </div>
@@ -82,7 +85,7 @@ export default function Header() {
           {/* navigation */}
           <div className="flex items-center order-2 lg:order-none">
               <ul className="flex flex-col lg:flex-row gap-3 lg:gap-10 text-[#76787b] text-lg transition-all duration-200 ease-linear">
-                <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='' && 'navLinks'}`} onClick={() => navigate("/")}>Home</li>
+                <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='/' && 'navLinks'}`} onClick={() => navigate("/")}>Home</li>
                 <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='about' && 'navLinks'}`} onClick={() => navigate("/about")}>About</li>
                 <li className={`text-center hover:text-purple-500 cursor-pointer py-2 relative ${tab==='contact' && 'navLinks'}`}onClick={() => navigate("/contact")}>Contact</li>
               </ul>
