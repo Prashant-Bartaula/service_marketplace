@@ -15,7 +15,7 @@ export default function Home() {
   }, [location.pathname]);
 
   return (
-    <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px]">
+    <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px] overflow-x-scroll">
       {/* left side  */}
         <div className="flex flex-col gap-8 max-w-[350px]">
         <form className="max-w-fit px-4 py-2 rounded-2xl border-[1px] border-gray-700 text-nowrap">
@@ -42,10 +42,29 @@ export default function Home() {
         </div>
 
         {/* right side  */}
-        <div className="mt-[50px] sm:mt-0 sm:flex-grow sm:pl-8">
-          <div className="pb-2 border-b border-gray-400 flex justify-between items-center">
+        <div className="mt-[100px] flex flex-col gap-8 sm:mt-0 sm:flex-grow sm:pl-8">
+
+          {/* category text  */}
+          <div className="pb-2 border-b border-gray-400 flex  justify-between items-center">
           <h1 className="text-xl text-gray-700 font-normal tracking-wide">{`Category : ${tab?tab:'All'}`}</h1>
             <button className="text-gray-500 px-3 py-2 bg-gray-200 rounded-2xl shadow-md hover:bg-gray-300 transition-all ease-linear duration-200"><i className="fa-solid fa-filter"></i><span className="ml-3">Filter</span></button>
+          </div>
+
+          {/* trending  */}
+          <div className="relative">
+            <h1 className="text-xl text-gray-600 font-normal tracking-wide py-2 border-b border-gray-400"><i className="fa-solid fa-arrow-trend-up"></i><span className="ml-3">Trending</span></h1>
+            <div className="mt-6 flex gap-7">
+              <div className="w-fit snap-x flex flex-col">
+                <img src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="something" className="w-[240px] h-[170px] object-cover rounded-lg"/>
+                <h1 className="text-base font-medium mt-3">Something</h1>
+                <h2 className="text-xs text-gray-500 mt-1">Cleaning</h2>
+                <div className="flex justify-between">
+                  <h1 className="text-gray-700">$100</h1>
+                  <button><i className={`fa-regular fa-heart`}></i></button>
+                </div>
+                <button className="mt-2 bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200">Book Now</button>
+              </div>
+            </div>
           </div>
         </div>
     </div>

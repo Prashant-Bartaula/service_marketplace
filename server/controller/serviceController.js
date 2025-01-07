@@ -42,6 +42,9 @@ export const getServices=async(req, res, next)=>{
         const startIndex=req.query.startIndex || 0;
         const limit= req.query.limit || 10;
         const sortDirection=req.query.order==='asc'?1:-1
+        if(req.query.slug){
+            await Service.findOneAndUpdate({slug:req.query.slug}, {$inc:{views:1}});
+        }
         const services=await Service.find({
             ...(req.query.category && {category:req.query.category}),
             ...(req.query.slug && {slug:req.query.slug}),
@@ -145,6 +148,19 @@ export const getWorkerServices=async(req, res, next)=>{
     }
 }
 
+export const getTrendingServices=async(req, res, next)=>{
+    try {
+        const services=await Service.find().sort({views:-1}).limit(10);
+        if(!services){
+            return next(errorHandler(400, "no services found..."));
+        }
+        res.status(200).json({
+            services
+        })
+    } catch (error) {
+        next(error);
+    }
+}
 export const deleteService=async(req, res, next)=>{
     if(!req.user.id===req.params.workerId || !req.user.role==='worker'){
         return next(errorHandler(401, "unauthorized"));
@@ -197,3 +213,4 @@ export const updateService=async(req, res, next)=>{
         next(error)
     }
 }
+
