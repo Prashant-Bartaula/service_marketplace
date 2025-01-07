@@ -120,7 +120,7 @@ const navigate=useNavigate();
             onChange={(e) => handleChange(e)}
           />
         </div>
-
+  
         <div className="w-full flex flex-col gap-2 px-4">
           <label
             htmlFor="category"
@@ -148,6 +148,27 @@ const navigate=useNavigate();
           </select>
         </div>
 
+        <div className="w-full flex flex-col gap-2 px-4">
+          <label
+            htmlFor="serviceTime"
+            className="text-lg font-medium tracking-wider"
+          >
+            Select Time<sup className="text-red-500">*</sup>
+          </label>
+          <select
+            name="serviceTime"
+            id="serviceTime"
+            className="outline-none border-2 border-gray-400 px-3 py-2  rounded-lg cursor-pointer"
+            onChange={(e) => handleChange(e)}
+          >
+            <option value="">
+              Not selected
+            </option>
+            <option value="early" className="tracking-wider">8Am - 11Am</option>
+            <option value="afternoon" className="tracking-wider">12Pm - 3Pm</option>
+            <option value="evening" className="tracking-wider">4Pm - 7Pm</option>
+          </select>
+        </div>
         <div className="w-full flex flex-col gap-2 px-4">
           <label
             htmlFor="description"

@@ -2,13 +2,13 @@ import Service from "../models/serviceModel.js";
 import { errorHandler } from "../utils/error.js";
 
 export const createService=async(req,res, next)=>{
-    const {title, category, description, serviceDate, servicePic, price}=req.body
+    const {title, category, description, serviceDate, servicePic, price, serviceTime}=req.body
 
     if(!req.user ||!req.user.role==='worker'){
         return next(errorHandler(401, "unauthorized"))
     }
     
-    if(!title || !category || !description || !serviceDate || !price || title==='' || category==='' || description==='' || serviceDate==='' || price===''){
+    if(!title || !category || !description || !serviceDate || !price || !serviceTime || title==='' || category==='' || description==='' || serviceDate==='' || price==='' || serviceTime===''){
         return next(errorHandler(400, "fill all the required fields..."));
     }
     
@@ -20,7 +20,7 @@ export const createService=async(req,res, next)=>{
     const slug=`${title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, "-")}${Math.floor(Math.random()*100000)}`
 
     const newService=new Service({
-        title, category, description, serviceDate, servicePic:servicePic || undefined, price:parseInt(price), workerId:req.user.id, slug
+        title, category, description, serviceDate,serviceTime, servicePic:servicePic || undefined, price:parseInt(price), workerId:req.user.id, slug
     });
 
     try {
@@ -176,13 +176,13 @@ export const deleteService=async(req, res, next)=>{
 }
 
 export const updateService=async(req, res, next)=>{
-    const  {title, category, description, serviceDate, servicePic, price}=req.body;
+    const  {title, category, description, serviceDate, servicePic, price, serviceTime}=req.body;
     let {slug}=req.body;
     if(!req.user.id===req.params.workerId || !req.user.role==='worker'){
         return next(errorHandler(401, "unauthorized"));
     }
 
-    if(!title || !category || !description || !serviceDate || !price || title==='' || category==='' || description==='' || serviceDate==='' || price===''){
+    if(!title || !category || !description || !serviceDate || !price || !serviceTime || title==='' || category==='' || description==='' || serviceDate==='' || price==='' || serviceTime===''){
         return next(errorHandler(400, "fill all the required fields..."));
     }
     const currentTime=new Date();
