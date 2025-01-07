@@ -26,8 +26,6 @@ export default function ServicePage() {
         setService(data.services[0]);
       } catch (error) {
         setErrorMessage(error.message);
-      } finally {
-        setLoading(false);
       }
     };
     getservice();
@@ -39,7 +37,6 @@ export default function ServicePage() {
       const getWorker=async()=>{
         setErrorMessage("");
         try {
-          setLoading(true);
           const res=await fetch(`http://localhost:5000/api/user/getWorker/${service.workerId}`)
           const data =await res.json();
           if(!res.ok){
@@ -49,35 +46,33 @@ export default function ServicePage() {
           
         } catch (error) {
           setErrorMessage(error.message);
-        }finally{
-          setLoading(false);
         }
-  
       }
       getWorker();
     }
   }, [service])
 
   useEffect(()=>{
-    const getRelatedServices=async()=>{
-      setErrorMessage("");
-      try {
-        setLoading(true);
-        const res=await fetch(`http://localhost:5000/api/service/getServices?category=${service.category}&limit=4`);
-        const data=await res.json();
-        if(!res.ok){
-          return setErrorMessage(data.message)
+    if(service){
+      const getRelatedServices=async()=>{
+        setErrorMessage("");
+        try {
+          const res=await fetch(`http://localhost:5000/api/service/getServices?category=${service.category}&limit=4`);
+          const data=await res.json();
+          if(!res.ok){
+            return setErrorMessage(data.message)
+          }
+          setRelatedServices(()=>{
+            return data.services.filter(ser=>ser._id!==service._id)
+          });
+        } catch (error) {
+          setErrorMessage(error.message);
+        }finally{
+          setLoading(false);
         }
-        setRelatedServices(()=>{
-          return data.services.filter(ser=>ser._id!==service._id)
-        });
-      } catch (error) {
-        setErrorMessage(error.message);
-      }finally{
-        setLoading(false);
       }
+      getRelatedServices();
     }
-    getRelatedServices();
   }, [service]);
 
 
@@ -117,7 +112,7 @@ export default function ServicePage() {
   if (service.length === 0 && !loading) {
     return <NotFoundPage />;
   } else {
-    return loading ? (
+    return loading? (
       <div className="min-h-screen max-w-[1000px] flex justify-center items-center mx-auto">
         <dotlottie-player
           src="https://lottie.host/83f8b309-b39c-4ae6-bee9-58f7bdda0024/LVfoSN8zfR.lottie"
@@ -128,7 +123,7 @@ export default function ServicePage() {
           autoplay
         ></dotlottie-player>
       </div>
-    ) : (
+    ) : service?(
       <div className="min-h-screen max-w-[1100px]  flex flex-wrap mx-auto py-[80px] px-3">
         {/* left side  */}
         <div className="relative flex-grow px-3">
@@ -138,7 +133,7 @@ export default function ServicePage() {
 
               {/* image */}
               <div className="relative h-[250px] w-full rounded-sm sm:h-[150px] sm:w-[150px] sm:rounded-full overflow-hidden order-1 sm:order-none mt-4 sm:mt-0">
-                <img src={service.servicePic} alt={service?.title} className="h-full w-full  object-cover"/>
+                <img src={service?.servicePic} alt={service?.title} className="h-full w-full  object-cover"/>
               </div>
 
               {/* title  */}
@@ -201,7 +196,7 @@ export default function ServicePage() {
           </div>
         </div>
       </div>
-    );
+    ):null;
   }
 }
 
