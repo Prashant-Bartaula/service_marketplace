@@ -56,7 +56,7 @@ export const getServices=async(req, res, next)=>{
                     ]
             })
         }).sort({
-            updatedAt:sortDirection
+            createdAt:sortDirection
         }).skip(startIndex).limit(limit);
 
         const totalServices=await Service.countDocuments();
