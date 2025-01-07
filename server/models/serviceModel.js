@@ -14,6 +14,10 @@ const serviceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    workerUsername:{
+      type:String,
+      required:true,
+    },
     description: {
       type: String,
       required: true,

@@ -1,14 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
-
+import moment from "moment";
 export default function Home() {
   const [tab, setTab] = useState("");
   const [trending, setTrending] = useState([]);
   const [trendingError, setTrendingError] = useState("");
   const [recent, setRecent] = useState([]);
   const [recentError, setRecentError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [services, setServices] = useState([]);
   const location = useLocation();
-  const isInitialRender = useRef(true);
+  // const isInitialRender = useRef(true);
 
   useEffect(() => {
     // if (isInitialRender.current) {
@@ -17,7 +20,6 @@ export default function Home() {
     // }
     setTab("");
   }, [location.pathname]);
-
 
   //trending
   useEffect(() => {
@@ -57,7 +59,29 @@ export default function Home() {
       }
     };
     fetchRecent();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    setError("");
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&limit=10`
+        );
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.message);
+        }
+        setServices(data.services);
+      } catch (error) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServices();
+  }, [tab]);
 
   return (
     <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px]">
@@ -173,24 +197,34 @@ export default function Home() {
             ) : (
               trending.map((service, index) => {
                 return (
-                  <div className="w-fit flex-shrink-0 snap-start  flex flex-col" key={index}>
+                  <div
+                    className="w-fit flex-shrink-0 snap-start  flex flex-col"
+                    key={index}
+                  >
                     <img
                       src={service.servicePic}
                       alt={service.title}
                       className="w-[150px] h-[120px] object-cover rounded-lg"
                     />
-                    <h1 className="text-sm font-medium mt-3">{service.title}</h1>
-                    <h2 className="text-xs text-gray-500 mt-1">{service.category}</h2>
+                    <h1 className="text-sm font-medium mt-3">
+                      {service.title}
+                    </h1>
+                    <h2 className="text-xs text-gray-500 mt-1">
+                      {service.category}
+                    </h2>
                     <div className="flex justify-between">
-                      <h1 className="text-gray-700 text-sm">Rs. {service.price}</h1>
+                      <h1 className="text-gray-700 text-sm">
+                        Rs. {service.price}
+                      </h1>
                       <button>
                         <i className={`fa-regular fa-heart`}></i>
                       </button>
                     </div>
-                    <Link to={`/service/${service.slug}`} className="text-center bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm">
-                    <button>
-                      Book Now
-                    </button>
+                    <Link
+                      to={`/service/${service.slug}`}
+                      className="text-center bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
+                    >
+                      <button>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -211,24 +245,34 @@ export default function Home() {
             ) : (
               recent.map((service, index) => {
                 return (
-                  <div className="w-fit flex-shrink-0 snap-start  flex flex-col" key={index}>
+                  <div
+                    className="w-fit flex-shrink-0 snap-start  flex flex-col"
+                    key={index}
+                  >
                     <img
                       src={service.servicePic}
                       alt={service.title}
                       className="w-[150px] h-[120px] object-cover rounded-lg"
                     />
-                    <h1 className="text-sm font-medium mt-3">{service.title}</h1>
-                    <h2 className="text-xs text-gray-500 mt-1">{service.category}</h2>
+                    <h1 className="text-sm font-medium mt-3">
+                      {service.title}
+                    </h1>
+                    <h2 className="text-xs text-gray-500 mt-1">
+                      {service.category}
+                    </h2>
                     <div className="flex justify-between">
-                      <h1 className="text-gray-700 text-sm">Rs. {service.price}</h1>
+                      <h1 className="text-gray-700 text-sm">
+                        Rs. {service.price}
+                      </h1>
                       <button>
                         <i className={`fa-regular fa-heart`}></i>
                       </button>
                     </div>
-                    <Link to={`/service/${service.slug}`} className="text-center  bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm">
-                    <button>
-                      Book Now
-                    </button>
+                    <Link
+                      to={`/service/${service.slug}`}
+                      className="text-center  bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
+                    >
+                      <button>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -237,6 +281,67 @@ export default function Home() {
           </div>
         </div>
 
+        {/*  services  */}
+        <div className="mt-20 border-t border-gray-500 py-6">
+          {loading ? (
+            <div className="w-full flex justify-center">
+              <dotlottie-player
+                src="https://lottie.host/83f8b309-b39c-4ae6-bee9-58f7bdda0024/LVfoSN8zfR.lottie"
+                background="transparent"
+                speed="1"
+                style={{ width: "500px", height: "500px" }}
+                loop
+                autoplay
+              ></dotlottie-player>
+            </div>
+          ):error || services.length===0?(
+            <p className="text-xl text-center mt-10 text-gray-400">Sorry! No services found...</p>
+          ):(
+            <div className="flex flex-col gap-8 mt-10">
+
+              {services.map((service, index)=>{
+                return (
+               
+              <div className="flex w-full md:max-w-[700px] relative gap-6 hover:bg-sky-50 border border-transparent hover:border-sky-300 duration-150 transition-all ease-linear rounded-xl border-b border-b-gray-300 p-2 pb-8" key={index}>
+                {/* left side  */}
+                <div className="flex items-start flex-shrink-0">
+                  <Link to={`service/${service.slug}`}>
+                  <img
+                    src={service.servicePic}
+                    alt={service.title}
+                    className="h-[140px] w-[140px] object-cover rounded-md"
+                  />
+                  </Link>
+                </div>
+
+                {/* right side */}
+                <div className="flex flex-grow flex-col gap-3">
+                  <h1 className="text-base text-gray-700 font-medium">
+                    {service.title}
+                  </h1>
+                  <h2 className="text-ellipsis text-[13px] text-gray-500">
+                   {service.description.slice(0, 100)}
+                  </h2>
+                  <div className="flex justify-between pb-1 border-b border-gray-300">
+                    <h2 className="text-md font-medium ">Rs. {service.price}</h2>
+                    <span className="text-xs text-gray-500">
+                      {moment(service.createdAt).fromNow()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-gray-500">
+                    <button>ram sharan</button>
+                    <button>
+                      <i className={`fa-regular fa-bookmark`}></i>
+                    </button>
+                  </div>
+                </div>
+                
+              </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
