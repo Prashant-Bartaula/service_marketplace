@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate} from "react-router-dom";
 import NotFoundPage from "../components/NotFoundPage";
+import {useSelector} from 'react-redux'
 
 export default function ServicePage() {
   const { serviceSlug } = useParams();
@@ -9,7 +10,12 @@ export default function ServicePage() {
   const [worker, setWorker] = useState({});
   const [relatedServices, setRelatedServices] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [booked, setBooked] = useState(false);
+  const [bookedError, setBookedError] = useState("");
+  const [bookedLoading, setBookedLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const {currentUser}=useSelector((state)=>state.user)
+  const navigate=useNavigate()
 
   useEffect(() => {
     const getservice = async () => {
@@ -24,6 +30,7 @@ export default function ServicePage() {
           return setErrorMessage(data.message);
         }
         setService(data.services[0]);
+        setBooked(data.services[0].isBooked);
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -114,6 +121,35 @@ export default function ServicePage() {
     setIsBookmarked(!isBookmarked);
   }
 
+  const handleBooking=async(e)=>{
+    e.preventDefault();
+    console.log('hit')
+    setBookedError("");
+    if(!currentUser || currentUser.role!=="customer"){
+      return navigate('/user-sign-up')
+    }
+
+    try {
+      setBookedLoading(true);
+      const res=await fetch(`http://localhost:5000/api/service/bookService/${service._id}/${currentUser._id}`,{
+        method:'PUT',
+        credentials:'include'
+      })
+      const data=await res.json();
+      if(!res.ok){
+        setBooked(booked);
+        return setBookedError(data.message);
+      }
+      setBooked(data.updatedService.isBooked);
+      setBookedError("");
+      setService(data.updatedService);
+    } catch (error) {
+      setBookedError(error.message);
+    }finally{
+      setBookedLoading(false);
+    }
+  }
+
   if (service.length === 0 && !loading) {
     return <NotFoundPage />;
   } else {
@@ -177,7 +213,7 @@ export default function ServicePage() {
             <h1 className="text-gray-600 tracking-wider"><i className="fa-solid fa-calendar"></i><span className="ml-3">{new Date(service.serviceDate).toDateString()}</span></h1>
 
               <button className="w-full max-w-[600px] text-center px-3 py-2
-               bg-purple-500 text-white rounded-lg"><i className="fa-solid fa-calendar"></i>&nbsp;&nbsp;Book Appointment</button>
+               bg-purple-500 text-white rounded-lg" onClick={(e) => handleBooking(e)}><i className={`fa-solid fa-${booked?"times":"calendar"}`} ></i>&nbsp;&nbsp;{loading?"Loading...":booked?"Cancel Appointment":"Book an Appointment"}</button>
           </div>
 
           {/* related services part  */}

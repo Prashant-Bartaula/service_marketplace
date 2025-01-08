@@ -176,6 +176,7 @@ export default function Home() {
       console.log(error);
     }
   };
+  
   return (
     <div className="flex flex-col relative sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px] overflow-x-hidden">
       {/* left side  */}

@@ -1,6 +1,6 @@
 import express from 'express'
 import { verifyUser } from '../utils/verifyUser.js';
-import {createService, getServices, getCustomerServices, getWorkerServices, deleteService, updateService, getTrendingServices} from '../controller/serviceController.js'
+import {createService, getServices, getCustomerServices, getWorkerServices, deleteService, updateService, getTrendingServices, bookService} from '../controller/serviceController.js'
 
 const router=express.Router();
 
@@ -10,6 +10,7 @@ router.get('/getTrendingServices', getTrendingServices)
 router.post('/getCustomerServices', verifyUser, getCustomerServices);
 router.post("/getWorkerServices", verifyUser, getWorkerServices);
 router.delete('/deleteService/:serviceId/:workerId', verifyUser, deleteService);
+router.put('/bookService/:serviceId/:userId', verifyUser, bookService);
 router.put('/updateService/:serviceId/:workerId', verifyUser, updateService);
 
 export default router;

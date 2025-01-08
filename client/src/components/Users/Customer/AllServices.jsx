@@ -34,10 +34,15 @@ export default function AllServices() {
             <div className="flex flex-wrap gap-4 justify-center">
                 {services?.map((service, index)=>{
                     return (
-                        <div key={index} className="flex flex-col gap-3 w-min relative tracking-wide shadow-xl">
-                               <Link to={`/service/${service.slug}`}><img src={service.servicePic} alt="service-pic" className="h-[200px] w-[300px] md:w-[300px] object-cover rounded-lg"/></Link>
+                        <div key={index} className="flex flex-col gap-3 relative tracking-wide shadow-xl px-2
+                         py-4 rounded-xl overflow-hidden">
+                               <Link to={`/service/${service.slug}`}><img src={service.servicePic} alt="service-pic" className="h-[150px] w-[300px] md:w-[250px] object-cover rounded-lg"/></Link>
                                <h1 className="text-sm font-semibold ">{service.title.slice(0, 50)}</h1>
                                <h2 className="text-sm ">Rs. {service.price}</h2>
+                               {
+                                  service.isCompleted?(<div className="absolute bottom-0  right-0 z-50 bg-green-500 text-white text-sm px-2 py-1">Completed</div>):service.isBooked?(
+                                      <div className="absolute bottom-0  right-0 z-50 bg-yellow-500 text-white text-sm px-2 py-1">Ongoing</div>):null
+                               }
                         </div>
                     )
                 })}
