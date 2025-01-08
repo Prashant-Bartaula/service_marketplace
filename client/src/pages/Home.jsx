@@ -17,6 +17,7 @@ export default function Home() {
   const [filtered, setFiltered]=useState(false);
   const [services, setServices] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const location = useLocation();
   // const isInitialRender = useRef(true);
 
@@ -81,6 +82,11 @@ export default function Home() {
           setError(data.message);
         }
         setServices(data.services);
+        if(data.services.length<10){
+          setShowMore(false);
+        }else{
+          setShowMore(true);
+        }
       }catch (error){
         setError(err);
       }finally{
@@ -143,6 +149,24 @@ export default function Home() {
     }
   }
  
+  const handleShowMore=async()=>{
+    const startIndex=services.length;
+    try {
+      const res=await fetch(`http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&order=${order}&priceOrder=${priceOrder}&min=${min}&max=${max}&limit=10&startIndex=${startIndex}`)
+      const data=await res.json();
+      if(!res.ok){
+        setError(data.message);
+      }
+      setServices(prev=>[...prev, ...data.services]);
+      if(data.services.length<10){
+        setShowMore(false);
+      }else{
+        setShowMore(true);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="flex flex-col sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px]">
       {/* left side  */}
@@ -431,8 +455,11 @@ export default function Home() {
               </div>
                 )
               })}
+              {showMore &&   <button onClick={handleShowMore} className="md:max-w-[700px] bg-sky-600 text-white px-5 py-2 rounded-md shadow-md hover:bg-sky-700 transition-all ease-linear duration-200 text-nowrap text-sm">Show more</button>}
+             
             </div>
           )}
+          
         </div>
       </div>
     </div>
