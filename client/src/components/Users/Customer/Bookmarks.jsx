@@ -27,9 +27,7 @@ export default function Bookmarks(){
             {bookmarks.map((service, index)=>{
                 return     (
                 <div key={index}  className="flex flex-col gap-3 w-min relative tracking-wide">
-                    {
                         <Link to={`/service/${service.slug}`}><img src={service.servicePic} alt="service-pic" className="h-auto max-h-[150px] min-w-[200px] max-w-[300px] object-cover rounded-lg"/></Link>
-                        }
 
                     <h1 className="text-sm font-semibold ">{service.title.slice(0, 30)}</h1>
                     <h2 className="text-sm ">Rs. {service.price}</h2>
