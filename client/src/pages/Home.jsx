@@ -177,7 +177,7 @@ export default function Home() {
     }
   };
   
-
+console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && trending[1]?.isBooked?'hit':'');
   return (
     <div className="flex flex-col relative sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px] overflow-x-hidden">
       {/* left side  */}
@@ -368,6 +368,10 @@ export default function Home() {
                       service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
+                    {
+                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked? 
+                     ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
+                    }
                     <h1 className="text-sm font-medium mt-3">
                       {service.title}
                     </h1>
@@ -391,10 +395,8 @@ export default function Home() {
                     <Link
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
-                      // aria-disabled={service.serviceDate < Date.now()}
-                     disabled={true}
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') &&  "cursor-not-allowed bg-purple-200"}`}>Book Now</button>
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked?"cursor-not-allowed bg-purple-200":''}`}>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -428,6 +430,10 @@ export default function Home() {
                       service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
+                     {
+                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked? 
+                     ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
+                    }
                     <h1 className="text-sm font-medium mt-3">
                       {service.title}
                     </h1>
@@ -454,10 +460,8 @@ export default function Home() {
                     <Link
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
-                      // aria-disabled={service.serviceDate < Date.now()}
-                     disabled={true}
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') &&  "cursor-not-allowed bg-purple-200"}`}>Book Now</button>
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked?"cursor-not-allowed bg-purple-200":''}`}>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -502,7 +506,15 @@ export default function Home() {
                           className=" h-[100px] w-[90px] sm:h-[140px] sm:w-[140px] object-cover rounded-md"
                         />
                         <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
-                          
+                          </>
+                        ):service.isBooked?(
+                          <>
+                          <img
+                          src={service.servicePic}
+                          alt={service.title}
+                          className=" h-[100px] w-[90px] sm:h-[140px] sm:w-[140px] object-cover rounded-md"
+                        />
+                        <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>
                           </>
                         ):(
                           <Link to={`service/${service.slug}`}>
