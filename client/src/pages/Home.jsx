@@ -177,6 +177,7 @@ export default function Home() {
     }
   };
   
+
   return (
     <div className="flex flex-col relative sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px] overflow-x-hidden">
       {/* left side  */}
@@ -355,7 +356,7 @@ export default function Home() {
               trending.map((service, index) => {
                 return (
                   <div
-                    className="w-fit flex-shrink-0 snap-start  flex flex-col"
+                    className="relative w-fit flex-shrink-0 snap-start  flex flex-col"
                     key={index}
                   >
                     <img
@@ -363,6 +364,10 @@ export default function Home() {
                       alt={service.title}
                       className="w-[150px] h-[120px] object-cover rounded-lg"
                     />
+                    {
+                      service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
+                      <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
+                    }
                     <h1 className="text-sm font-medium mt-3">
                       {service.title}
                     </h1>
@@ -385,9 +390,11 @@ export default function Home() {
                     </div>
                     <Link
                       to={`/service/${service.slug}`}
-                      className="text-center bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
+                      className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
+                      // aria-disabled={service.serviceDate < Date.now()}
+                     disabled={true}
                     >
-                      <button>Book Now</button>
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') &&  "cursor-not-allowed bg-purple-200"}`}>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -402,14 +409,14 @@ export default function Home() {
             <i className="fa-regular fa-clock"></i>
             <span className="ml-3">Latest</span>
           </h1>
-          <div className="mt-4 w-full relative overflow-x-auto flex gap-6 snap-x snap-mandatory">
+          <div className="mt-4 w-full relative overflow-x-auto flex gap-7 snap-x snap-mandatory">
             {recentError ? (
               <p className="text-gray-400 text-3xl">{recentError}</p>
             ) : (
               recent.map((service, index) => {
                 return (
                   <div
-                    className="w-fit flex-shrink-0 snap-start flex flex-col"
+                    className="relative w-fit flex-shrink-0 snap-start flex flex-col"
                     key={index}
                   >
                     <img
@@ -417,13 +424,17 @@ export default function Home() {
                       alt={service.title}
                       className="w-[150px] h-[120px] object-cover rounded-lg"
                     />
+                     {
+                      service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
+                      <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
+                    }
                     <h1 className="text-sm font-medium mt-3">
                       {service.title}
                     </h1>
                     <h2 className="text-xs text-gray-500 mt-1">
                       {service.category}
                     </h2>
-                    <div className="flex justify-between items-center mt-2">
+                    <div className="flex justify-between items-center">
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
@@ -442,9 +453,11 @@ export default function Home() {
                     </div>
                     <Link
                       to={`/service/${service.slug}`}
-                      className="text-center bg-purple-500 text-white px-5 py-2 rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-sm"
+                      className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
+                      // aria-disabled={service.serviceDate < Date.now()}
+                     disabled={true}
                     >
-                      Book Now
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') &&  "cursor-not-allowed bg-purple-200"}`}>Book Now</button>
                     </Link>
                   </div>
                 );
@@ -479,14 +492,28 @@ export default function Home() {
                     key={index}
                   >
                     {/* left side  */}
-                    <div className="flex items-start flex-shrink-0">
-                      <Link to={`service/${service.slug}`}>
-                        <img
+                    <div className="relative flex items-start flex-shrink-0">
+                      {
+                        service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')?(
+                          <>
+                          <img
                           src={service.servicePic}
                           alt={service.title}
                           className=" h-[100px] w-[90px] sm:h-[140px] sm:w-[140px] object-cover rounded-md"
                         />
-                      </Link>
+                        <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
+                          
+                          </>
+                        ):(
+                          <Link to={`service/${service.slug}`}>
+                            <img
+                              src={service.servicePic}
+                              alt={service.title}
+                              className=" h-[100px] w-[90px] sm:h-[140px] sm:w-[140px] object-cover rounded-md"
+                            />
+                          </Link>
+                        )
+                      }
                     </div>
 
                     {/* right side */}

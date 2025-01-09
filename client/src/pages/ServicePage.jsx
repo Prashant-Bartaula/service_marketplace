@@ -123,7 +123,6 @@ export default function ServicePage() {
 
   const handleBooking=async(e)=>{
     e.preventDefault();
-    console.log('hit')
     setBookedError("");
     if(!currentUser || currentUser.role!=="customer"){
       return navigate('/user-sign-up')
@@ -165,6 +164,7 @@ export default function ServicePage() {
         ></dotlottie-player>
       </div>
     ) : service?(
+      <>
       <div className="min-h-screen max-w-[1100px]  flex flex-wrap mx-auto py-[80px] px-3">
         {/* left side  */}
         <div className="relative flex-grow px-3">
@@ -213,7 +213,8 @@ export default function ServicePage() {
             <h1 className="text-gray-600 tracking-wider"><i className="fa-solid fa-calendar"></i><span className="ml-3">{new Date(service.serviceDate).toDateString()}</span></h1>
 
               <button className="w-full max-w-[600px] text-center px-3 py-2
-               bg-purple-500 text-white rounded-lg" onClick={(e) => handleBooking(e)}><i className={`fa-solid fa-${booked?"times":"calendar"}`} ></i>&nbsp;&nbsp;{loading?"Loading...":booked?"Cancel Appointment":"Book an Appointment"}</button>
+               bg-purple-500 text-white rounded-lg" onClick={(e) => handleBooking(e)}><i className={`fa-solid fa-${booked?"times":"calendar"}`} ></i>&nbsp;&nbsp;{bookedLoading?"Loading...":booked?"Cancel Appointment":"Book an Appointment"}</button>
+               {bookedError && <div className="text-red-500">{bookedError}</div>}
           </div>
 
           {/* related services part  */}
@@ -237,6 +238,7 @@ export default function ServicePage() {
           </div>
         </div>
       </div>
+      </>
     ):null;
   }
 }
