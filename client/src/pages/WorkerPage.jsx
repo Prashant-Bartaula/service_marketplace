@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import NotFoundPage from "../components/NotFoundPage";
+import RateWorker from "../components/RateWorker";
 import Rating from '../components/Rating'
 export default function WorkerPage() {
   const [services, setServices] = useState([]);
   const [worker, setWorker] = useState({});
   const [loading, setLoading] = useState(false);
   const [completedService, setCompletedService] = useState(0);
+  const [rateWorkerOpen, setRateWorkerOpen] = useState(false)
   const { workerId } = useParams();
 
   useEffect(() => {
@@ -67,6 +69,7 @@ export default function WorkerPage() {
       ></dotlottie-player>
     </div>
   ) : (
+    <>
     <div className="relatiev z-10 min-h-screen max-w-[1250px] gap-5 mx-auto flex flex-col py-[70px] md:flex-row ">
       {/* left side  */}
       <div className="relative md:border-r-[1px] md:border-gray-300 md:pr-6 md:min-w-[400px]">
@@ -93,7 +96,7 @@ export default function WorkerPage() {
         <div className="mt-10 text-sm text-gray-400 font-light">{`${completedService > 0?`Successfully completed ${completedService}+ services`:''}`}</div>
         <div className="flex gap-5 mt-6 items-center justify-between flex-wrap">
             <Rating rating={worker.rating}/>
-            <button className="px-4 py-2 rounded-xl text-base text-white bg-purple-500">Rate Worker</button>
+            <button className="px-4 py-2 rounded-xl text-base text-white bg-purple-500" onClick={() => setRateWorkerOpen(true)}>Rate Worker</button>
         </div>
       </div>
 
@@ -141,5 +144,7 @@ export default function WorkerPage() {
         </div>
       </div>
     </div>
+    {rateWorkerOpen && <RateWorker setOpen={setRateWorkerOpen} workerId={workerId}/>}
+    </>
   );
 }

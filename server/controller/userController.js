@@ -120,3 +120,20 @@ export const getWorker=async(req, res, next)=>{
   }
 }
  
+
+export const rateWorker=async(req, res, next)=>{
+  try {
+    const worker=await Worker.findById(req.params.workerId);
+    if(!worker){
+      return next(errorHandler(400, "worker not found"));
+    }
+    await Worker.findByIdAndUpdate(req.params.workerId,{$set:{
+      rating:(worker.rating+req.body.rating)/2
+    }});
+    res.status(200).json({
+      message:"worker has been rated successfully"
+    })
+  } catch (error) {
+    next(error);
+  }
+}
