@@ -372,31 +372,17 @@ export const bookService = async (req, res, next) => {
 export const getWorkerPostedServices=async(req, res,next)=>{
   try {
     const services = await Service.find({ workerId: req.params.workerId });
-    // let totalIncome = 0;
-    // services.forEach((element) => {
-    //   element.isCompleted && (totalIncome += element.price);
-    // });
-    // const postedServices = await Service.countDocuments({
-    //   workerId: req.user.id,
-    // });
-    // const ongoingService = await Service.countDocuments({
-    //   isBooked: true,
-    //   workerId: req.user.id,
-    // });
-    // const completedService = await Service.countDocuments({
-    //   isCompleted: true,
-    //   workerId: req.user.id,
-    // });
+    const completedService = await Service.countDocuments({
+      isCompleted: true,
+      workerId: req.params.workerId,
+    });
     if (!services) {
       return next(errorHandler(400, "no services found..."));
     }
 
     res.status(200).json({
       services,
-      // ongoingService,
-      // completedService,
-      // postedServices,
-      // totalIncome,
+      completedService,
     });
   } catch (error) {
     next(error)
