@@ -111,11 +111,13 @@ export const getServices = async (req, res, next) => {
       .skip(startIndex)
       .limit(limit);
 
+      
+      
       const services=allservices.filter((service)=>{
         if(!service.isBooked){
-            if(moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(2, "days").format("YYYY-MM-DD")){
-              return service;
-            }
+          if(moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(2, "days").format("YYYY-MM-DD")){
+            return service;
+          }
         }else{
           if(!service.isCompleted && moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(4, "days").format("YYYY-MM-DD")){
             return service
@@ -125,13 +127,13 @@ export const getServices = async (req, res, next) => {
     const totalServices = await Service.countDocuments();
 
     const dateNow = new Date();
-
+    
     const lastMonthAgo = new Date(
       dateNow.getFullYear(),
       dateNow.getMonth() - 1,
       dateNow.getDate()
     );
-
+    
     const lastMonthServices = await Service.countDocuments({
       createdAt: { $gte: lastMonthAgo },
     });
@@ -216,10 +218,21 @@ export const getWorkerServices = async (req, res, next) => {
 
 export const getTrendingServices = async (req, res, next) => {
   try {
-    const services = await Service.find().sort({ views: -1 }).limit(10);
-    if (!services) {
+    const allservices = await Service.find().sort({ views: -1 }).limit(10);
+    if (!allservices) {
       return next(errorHandler(400, "no services found..."));
     }
+    const services=allservices.filter((service)=>{
+      if(!service.isBooked){
+          if(moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(2, "days").format("YYYY-MM-DD")){
+            return service;
+          }
+      }else{
+        if(!service.isCompleted && moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(4, "days").format("YYYY-MM-DD")){
+          return service
+        }
+      }
+    })
     res.status(200).json({
       services,
     });
@@ -356,3 +369,36 @@ export const bookService = async (req, res, next) => {
     next(error);
   }
 };
+export const getWorkerPostedServices=async(req, res,next)=>{
+  try {
+    const services = await Service.find({ workerId: req.params.workerId });
+    // let totalIncome = 0;
+    // services.forEach((element) => {
+    //   element.isCompleted && (totalIncome += element.price);
+    // });
+    // const postedServices = await Service.countDocuments({
+    //   workerId: req.user.id,
+    // });
+    // const ongoingService = await Service.countDocuments({
+    //   isBooked: true,
+    //   workerId: req.user.id,
+    // });
+    // const completedService = await Service.countDocuments({
+    //   isCompleted: true,
+    //   workerId: req.user.id,
+    // });
+    if (!services) {
+      return next(errorHandler(400, "no services found..."));
+    }
+
+    res.status(200).json({
+      services,
+      // ongoingService,
+      // completedService,
+      // postedServices,
+      // totalIncome,
+    });
+  } catch (error) {
+    next(error)
+  }
+}

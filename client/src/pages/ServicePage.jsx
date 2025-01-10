@@ -40,7 +40,7 @@ export default function ServicePage() {
 
 
   useEffect(()=>{
-    if(service){
+    if(Object.keys(service).length!==0){
       const getWorker=async()=>{
         setErrorMessage("");
         try {
@@ -205,8 +205,8 @@ export default function ServicePage() {
         <div className="flex flex-col gap-8 w-full 
          mt-[100px] ">
           {/* top part  */}
-          <div className="flex flex-col  gap-5  ">
-            <h1 className="text-purple-500"><i className="fa-solid fa-user"></i><span className="ml-3"> {worker?.username}</span></h1>
+          <div className="flex flex-col  gap-5">
+            <Link to={`/worker-page/${service.workerId}`}> <h1 className="text-purple-500"><i className="fa-solid fa-user"></i><span className="ml-3"> {worker?.username}</span></h1> </Link>
             <h1 className="text-gray-600 tracking-wider"><i className="fa-solid fa-clock"></i><span className="ml-3">Available {
               service.serviceTime==='early'?" 8:00AM to 10:00AM":service.serviceTime==='afternoon'?"12:00PM to 3:00PM":"4:00PM to 6:00PM"
               }</span></h1>

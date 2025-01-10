@@ -16,6 +16,7 @@ import ServicePage from "./pages/ServicePage";
 import NotFoundPage from "./components/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import UpdateService from "./pages/UpdateService";
+import WorkerPage from "./pages/WorkerPage";
 import "./App.css";
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
         <Route path='/contact' element={<Contact/>}/>
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/user-sign-up" element={<UserSignUp />} />
+        <Route path="/worker-page/:workerId" element={<WorkerPage />} />
         <Route path="/worker-sign-up" element={<WorkerSignUp />} />
         <Route element={<PrivateRoute />}>
           <Route path="/setting" element={<Setting />} />

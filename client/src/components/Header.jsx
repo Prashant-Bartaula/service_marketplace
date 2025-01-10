@@ -68,15 +68,17 @@ export default function Header() {
     <>
       <div className=" flex items-center justify-between gap-24 xs:px-4 py-10">
         {/* logo wrapper  */}
-        <div className="flex gap-6 items-center">
+        <div className="flex gap-3 items-center">
           <img
             src={logo}
             alt="logo"
             className="h-10 w-10 scale-[2.5] translate-y-2"
           />
-          <span className="text-2xl font-rubik  xs:text-3xl">
-            Marketplace
+          <Link to='/'>
+          <span className="text-xl font-bold font-rubik  xs:text-2xl">
+            Service Bazar
           </span>
+          </Link>
         </div>
 
         {/* search */}

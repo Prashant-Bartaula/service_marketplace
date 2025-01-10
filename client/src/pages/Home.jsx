@@ -543,9 +543,10 @@ export default function Home() {
                         </span>
                       </div>
                       <div className="flex justify-between text-gray-500">
-                        <button className="text-nowrap text-sm">
+                        <Link to={`worker-page/${service.workerId}`}> <button className="text-nowrap text-sm">
                           {service.workerUsername}
-                        </button>
+                        </button> </Link>
+                       
                        {service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?null: <button onClick={(e) => handleBookmark(e, service)}>
                           <i
                             className={`fa-${
@@ -572,6 +573,13 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* create post  */}
+      {currentUser.role==="worker" && <div className="fixed bottom-10 right-10 z-[100]">
+          <Link to={`/create-service`} className="px-6 py-2 bg-black text-xl text-white rounded-2xl">
+            Create Service
+          </Link>
+      </div>}
     </div>
   );
 }
