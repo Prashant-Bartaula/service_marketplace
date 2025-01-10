@@ -79,12 +79,15 @@ export const getServices = async (req, res, next) => {
   try {
     const startIndex = req.query.startIndex || 0;
     const limit = req.query.limit || 10;
+
     if (req.query.slug) {
+      const service=await Service.findOne({slug:req.query.slug});
       await Service.findOneAndUpdate(
         { slug: req.query.slug },
         { $inc: { views: 1 } }
       );
     }
+
     const services = await Service.find({
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
@@ -320,6 +323,9 @@ export const bookService = async (req, res, next) => {
     const service = await Service.findById(req.params.serviceId);
     if (!service) {
       return next(errorHandler(400, "service not found..."));
+    }
+    if(service.isBooked && service.bookerId !== req.user.id){
+      next(errorHandler(401, "service is already booked..."));
     }
     const updatedService = await Service.findByIdAndUpdate(
       req.params.serviceId,

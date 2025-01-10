@@ -13,6 +13,13 @@ export default function Contact() {
                   <p className='text-2xl text-[#5e5e5e] mt-5'><i className='fa-solid fa-envelope'></i> <span className='font-normal ml-5'>u2H6a@example.com</span></p>
                   <p className='text-2xl text-[#636363]'><i className='fa-solid fa-phone'></i> <span className='font-normal ml-5'>+91 9876543210</span></p>
                   <p  className='text-2xl text-[#636363]'><i className='fa-solid fa-location-dot'></i><span className='font-normal ml-5'>Khasibazar, kalanki</span></p>
+                  <p className='text-gray-700 font-light text-wrap mt-5'>visit our social media handles</p>
+                  <div className='flex flex-wrap gap-7'>
+                      <p className='text-2xl text-blue-500 cursor-pointer'><i className='fa-brands fa-facebook'></i></p>
+                      <p className='text-2xl text-orange-500 cursor-pointer'><i className='fa-brands fa-instagram'></i></p>
+                      <p className='text-2xl text-[#1DA1F2] cursor-pointer'><i className='fa-brands fa-twitter'></i></p>
+                      <p className='text-2xl text-[#0A66C2] cursor-pointer'><i className='fa-brands fa-linkedin'></i></p>
+                  </div>
               </div>
         </div>
     </div>

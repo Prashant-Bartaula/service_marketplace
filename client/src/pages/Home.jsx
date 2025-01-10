@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
+import {useSelector} from "react-redux"
 import moment from "moment";
 export default function Home() {
   const [tab, setTab] = useState("");
@@ -18,6 +19,7 @@ export default function Home() {
   const [services, setServices] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const {currentUser}=useSelector((state)=>state.user)
   const location = useLocation();
   // const isInitialRender = useRef(true);
 
@@ -163,7 +165,7 @@ export default function Home() {
         `http://localhost:5000/api/service/getServices?category=${tab?.toLowerCase()}&order=${order}&priceOrder=${priceOrder}&min=${min}&max=${max}&limit=10&startIndex=${startIndex}`
       );
       const data = await res.json();
-      if (!res.ok) {
+      if (!res.ok){
         setError(data.message);
       }
       setServices((prev) => [...prev, ...data.services]);
@@ -177,7 +179,6 @@ export default function Home() {
     }
   };
   
-console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && trending[1]?.isBooked?'hit':'');
   return (
     <div className="flex flex-col relative sm:flex-row min-h-screen max-w-[1300px] mx-auto my-[80px] overflow-x-hidden">
       {/* left side  */}
@@ -356,20 +357,20 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
               trending.map((service, index) => {
                 return (
                   <div
-                    className="relative w-fit flex-shrink-0 snap-start  flex flex-col"
+                    className="relative w-fit  flex-shrink-0 snap-start  flex flex-col"
                     key={index}
                   >
                     <img
                       src={service.servicePic}
                       alt={service.title}
-                      className="w-[150px] h-[120px] object-cover rounded-lg"
+                      className="w-[165px] h-[120px] object-cover rounded-lg align-middle"
                     />
                     {
                       service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
                     {
-                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked? 
+                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
                      ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
                     }
                     <h1 className="text-sm font-medium mt-3">
@@ -382,7 +383,7 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                      <button onClick={(e) => handleBookmark(e, service)}>
+                    {service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
                         <i
                           className={`fa-${
                             bookmarks.includes(service.slug)
@@ -390,13 +391,13 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                               : "regular"
                           } fa-heart`}
                         ></i>
-                      </button>
+                      </button>):null}
                     </div>
                     <Link
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked?"cursor-not-allowed bg-purple-200":''}`}>Book Now</button>
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
                     </Link>
                   </div>
                 );
@@ -424,14 +425,14 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                     <img
                       src={service.servicePic}
                       alt={service.title}
-                      className="w-[150px] h-[120px] object-cover rounded-lg"
+                      className="w-[165px] h-[120px] object-cover rounded-lg"
                     />
                      {
                       service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
-                     {
-                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked? 
+                      {
+                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
                      ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
                     }
                     <h1 className="text-sm font-medium mt-3">
@@ -444,10 +445,7 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                      <button
-                        onClick={(e) => handleBookmark(e, service)}
-                        className="text-gray-600 hover:text-red-500"
-                      >
+                      {service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
                         <i
                           className={`fa-${
                             bookmarks.includes(service.slug)
@@ -455,13 +453,13 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                               : "regular"
                           } fa-heart`}
                         ></i>
-                      </button>
+                      </button>):null}
                     </div>
                     <Link
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked?"cursor-not-allowed bg-purple-200":''}`}>Book Now</button>
+                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
                     </Link>
                   </div>
                 );
@@ -507,7 +505,7 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                         />
                         <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                           </>
-                        ):service.isBooked?(
+                        ):service.isBooked && currentUser._id!==service.bookerId?(
                           <>
                           <img
                           src={service.servicePic}
@@ -548,7 +546,7 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                         <button className="text-nowrap text-sm">
                           {service.workerUsername}
                         </button>
-                        <button onClick={(e) => handleBookmark(e, service)}>
+                       {service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?null: <button onClick={(e) => handleBookmark(e, service)}>
                           <i
                             className={`fa-${
                               bookmarks.includes(service.slug)
@@ -556,7 +554,7 @@ console.log(trending[1]?.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD
                                 : "regular"
                             } fa-bookmark`}
                           ></i>
-                        </button>
+                        </button>}
                       </div>
                     </div>
                   </div>
