@@ -87,7 +87,7 @@ export const getServices = async (req, res, next) => {
       );
     }
 
-    const services = await Service.find({
+    const allservices = await Service.find({
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.workerId && { workerId: req.query.workerId }),
@@ -111,6 +111,17 @@ export const getServices = async (req, res, next) => {
       .skip(startIndex)
       .limit(limit);
 
+      const services=allservices.filter((service)=>{
+        if(!service.isBooked){
+            if(moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(2, "days").format("YYYY-MM-DD")){
+              return service;
+            }
+        }else{
+          if(!service.isCompleted && moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(4, "days").format("YYYY-MM-DD")){
+            return service
+          }
+        }
+      })
     const totalServices = await Service.countDocuments();
 
     const dateNow = new Date();
