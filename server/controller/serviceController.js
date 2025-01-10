@@ -1,6 +1,6 @@
 import Service from "../models/serviceModel.js";
 import { errorHandler } from "../utils/error.js";
-
+import moment from "moment";
 export const createService = async (req, res, next) => {
   const {
     title,
@@ -81,7 +81,6 @@ export const getServices = async (req, res, next) => {
     const limit = req.query.limit || 10;
 
     if (req.query.slug) {
-      const service=await Service.findOne({slug:req.query.slug});
       await Service.findOneAndUpdate(
         { slug: req.query.slug },
         { $inc: { views: 1 } }
@@ -125,6 +124,7 @@ export const getServices = async (req, res, next) => {
     const lastMonthServices = await Service.countDocuments({
       createdAt: { $gte: lastMonthAgo },
     });
+
     if (!services) {
       return next(errorHandler(400, "no services found..."));
     }

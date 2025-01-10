@@ -90,7 +90,7 @@ export default function Home() {
           setShowMore(true);
         }
       } catch (error) {
-        setError(err);
+        setError(error);
       } finally {
         setLoading(false);
         setFiltered(false);
@@ -100,7 +100,7 @@ export default function Home() {
   }, [tab, filtered]);
 
   useEffect(() => {
-    if (trending.length !== 0 || services.length !== 0 || recent.length !== 0) {
+    if (trending?.length !== 0 || services?.length !== 0 || recent?.length !== 0) {
       const localStorageData = JSON.parse(
         window.localStorage.getItem("services")
       );
@@ -366,11 +366,11 @@ export default function Home() {
                       className="w-[165px] h-[120px] object-cover rounded-lg align-middle"
                     />
                     {
-                      service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
+                      service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
                     {
-                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
+                     service.serviceDate.split('T')[0] > moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
                      ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
                     }
                     <h1 className="text-sm font-medium mt-3">
@@ -383,7 +383,7 @@ export default function Home() {
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                    {service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
+                    {service.serviceDate.split('T')[0] > moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
                         <i
                           className={`fa-${
                             bookmarks.includes(service.slug)
@@ -397,7 +397,7 @@ export default function Home() {
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
+                      <button disabled={service.serviceDate.split('T')[0] <= moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
                     </Link>
                   </div>
                 );
@@ -428,11 +428,11 @@ export default function Home() {
                       className="w-[165px] h-[120px] object-cover rounded-lg"
                     />
                      {
-                      service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') && 
+                      service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') && 
                       <p className="absolute top-1 right-1 text-xs text-white bg-green-500 px-2 py-1 rounded-full">Outdated</p>
                     }
-                      {
-                     service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
+                    {
+                     service.serviceDate.split('T')[0] > moment().format('YYYY-MM-DD') && service.isBooked && currentUser._id!==service.bookerId? 
                      ( <p className="absolute top-1 right-1 text-xs text-white bg-red-500 px-2 py-1 rounded-full">Booked</p>):null
                     }
                     <h1 className="text-sm font-medium mt-3">
@@ -445,7 +445,7 @@ export default function Home() {
                       <h1 className="text-gray-700 text-sm">
                         Rs. {service.price}
                       </h1>
-                      {service.serviceDate.split('T')[0]!==moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
+                      {service.serviceDate.split('T')[0] > moment().format('YYYY-MM-DD')?service.isBooked && currentUser._id!==service.bookerId?null:(<button onClick={(e) => handleBookmark(e, service)}>
                         <i
                           className={`fa-${
                             bookmarks.includes(service.slug)
@@ -459,7 +459,7 @@ export default function Home() {
                       to={`/service/${service.slug}`}
                       className="relative text-center bg-purple-500 text-white  rounded-sm shadow-md hover:bg-purple-600 transition-all ease-linear duration-200 text-nowrap text-sm"
                     >
-                      <button disabled={service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
+                      <button disabled={service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId} className={`h-full w-full px-7 py-2 ${service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?"cursor-not-allowed bg-purple-200":''}`}>{service.isBooked && currentUser._id===service.bookerId?"Cancel Booking ":'Book now'}</button>
                     </Link>
                   </div>
                 );
@@ -496,7 +496,7 @@ export default function Home() {
                     {/* left side  */}
                     <div className="relative flex items-start flex-shrink-0">
                       {
-                        service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD')?(
+                        service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD')?(
                           <>
                           <img
                           src={service.servicePic}
@@ -546,7 +546,7 @@ export default function Home() {
                         <button className="text-nowrap text-sm">
                           {service.workerUsername}
                         </button>
-                       {service.serviceDate.split('T')[0]===moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?null: <button onClick={(e) => handleBookmark(e, service)}>
+                       {service.serviceDate.split('T')[0]<=moment().format('YYYY-MM-DD') || service.isBooked && currentUser._id!==service.bookerId?null: <button onClick={(e) => handleBookmark(e, service)}>
                           <i
                             className={`fa-${
                               bookmarks.includes(service.slug)
