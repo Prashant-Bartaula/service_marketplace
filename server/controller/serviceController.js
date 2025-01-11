@@ -397,7 +397,7 @@ export const getAllServices=async(req, res, next)=>{
   }
   try {
     const startIndex=req.query.startIndex || 0;
-    const services=await Service.find().skip(startIndex).limit(20);
+    const services=await Service.find({...(req.query.workerId && {workerId: req.query.workerId})}).skip(startIndex).limit(20);
 
     if(!services){
       return next(errorHandler(400, "no services found..."));

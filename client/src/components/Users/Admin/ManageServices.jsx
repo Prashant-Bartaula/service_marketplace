@@ -11,6 +11,9 @@ export default function ManageServices() {
   const [serviceId, setServiceId] = useState("");
   const [modelOpen, setModelOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [workerId, setWorkerId] = useState("");
+  const [worker, setWorker] = useState([]);
+  const [loading, setLoading] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
 
   useEffect(()=>{
@@ -37,6 +40,7 @@ export default function ManageServices() {
     getServices();
   }, [])
   
+//   delete service
 const handleDelete=async()=>{
   setError("");
   setSuccessMessage("");
@@ -57,6 +61,29 @@ const handleDelete=async()=>{
     setModelOpen(false);
   }
 }
+
+//  getWorker 
+useEffect(() => {
+  const getWorker = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/user/getWorkers`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        return alert(data.message);
+      }
+      setWorker(data.workers);
+    } catch (error) {
+      alert(error);
+    } 
+};
+getWorker();
+}, [])
 const fetchMore=async()=>{
     setErrorMessage("");
   const startIndex=services.length;
@@ -75,9 +102,53 @@ const fetchMore=async()=>{
         setErrorMessage(error.message);
     }
 }
-  return errorMessage || services.length===0?(<h1 className="text-2xl text-gray-300 text-center mt-24">Services not found</h1>):(
+
+//filter by worker 
+const filterByWorker=async()=>{
+  setErrorMessage("");
+  try {
+    setLoading(true);
+      const res=await fetch(`http://localhost:5000/api/service/getAllServices?workerId=${workerId}`, {
+          method:"POST",
+          credentials:"include"
+      });
+      const data=await res.json();
+      if(!res.ok){
+          return setErrorMessage(data.message);
+      };
+      setServices(data.services);
+    }catch (error) {
+        setErrorMessage(error.message);
+    }finally{
+        setLoading(false);
+    }
+}
+  return errorMessage || services.length===0?(<h1 className="text-2xl text-gray-300 text-center mt-24">Services not found</h1>):loading?( 
+  <div className="flex items-center justify-center">
+     <dotlottie-player
+    src="https://lottie.host/83f8b309-b39c-4ae6-bee9-58f7bdda0024/LVfoSN8zfR.lottie"
+    background="transparent"
+    speed="1"
+    style={{ width: "500px", height: "500px" }}
+    loop
+    autoplay
+  ></dotlottie-player>
+    </div>
+   ):(
     <>
 <div className="flex flex-col gap-6 w-full  overflow-x-scroll">
+    <div>
+        <select name="worker" id="worker" className="text-sm border p-2 border-gray-500 outline-none cursor-pointer" onChange={(e)=>setWorkerId(e.target.value)}>
+            <option value="">All</option>
+            {worker?.map((work, index)=>{
+                return (
+                    <option key={index} value={work._id}>{work.username}</option>
+                )
+            })}
+        </select>
+        <button onClick={filterByWorker} className="text-sm border px-2 py-1 cursor-pointer border-gray-500 ml-6 ">Filter</button>
+        {errorMessage && <h1 className="text-red-500 text-sm">{errorMessage}</h1>}
+    </div>
     {services.map((service, index)=>{
       return (
         <div className="flex flex-row gap-12 items-center border-b-2 border-gray-300 p-4" key={index}>

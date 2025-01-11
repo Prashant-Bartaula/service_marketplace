@@ -119,8 +119,6 @@ export const getWorker=async(req, res, next)=>{
     next(error);
   }
 }
- 
-
 export const rateWorker=async(req, res, next)=>{
   try {
     const worker=await Worker.findById(req.params.workerId);
@@ -132,6 +130,23 @@ export const rateWorker=async(req, res, next)=>{
     }});
     res.status(200).json({
       message:"worker has been rated successfully"
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+export const getWorkers=async(req, res, next)=>{
+  console.log('hit')
+  if(!req.user || req.user.role!=="admin"){
+    return next(errorHandler(401, "unauthorized..."));
+  }
+  try {
+    const workers=await Worker.find();
+    if(!workers){
+      return next(errorHandler(400, "workers not found"));
+    }
+    res.status(200).json({
+      workers
     })
   } catch (error) {
     next(error);
