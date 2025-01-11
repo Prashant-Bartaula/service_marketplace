@@ -138,15 +138,18 @@ const filterByWorker=async()=>{
     <>
 <div className="flex flex-col gap-6 w-full  overflow-x-scroll">
     <div>
-        <select name="worker" id="worker" className="text-sm border p-2 border-gray-500 outline-none cursor-pointer" onChange={(e)=>setWorkerId(e.target.value)}>
-            <option value="">All</option>
+        <select name="worker" id="worker" className="text-sm border p-2 border-gray-500 outline-none cursor-pointer" onChange={(e)=>{
+            setWorkerId(e.target.value);
+        }}>
             {worker?.map((work, index)=>{
                 return (
                     <option key={index} value={work._id}>{work.username}</option>
                 )
             })}
+            <option value="">All</option>
         </select>
         <button onClick={filterByWorker} className="text-sm border px-2 py-1 cursor-pointer border-gray-500 ml-6 ">Filter</button>
+  
         {errorMessage && <h1 className="text-red-500 text-sm">{errorMessage}</h1>}
     </div>
     {services.map((service, index)=>{
