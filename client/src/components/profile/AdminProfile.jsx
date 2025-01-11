@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AllServices from "../Users/Admin/AllServices";
+import Analytics from "../Users/Admin/Analytics";
 export default function AdminProfile() {
   const { currentUser } = useSelector((state) => state.user);
   const [tab, setTab] = useState("All services");
@@ -44,11 +45,20 @@ export default function AdminProfile() {
             >
               All services
             </li>
+            <li
+              className={`hover:text-black cursor-pointer py-3 px-2 relative ${
+                tab === "Analytics" && "profileLinks"
+              }`}
+              onClick={() => setTab("Analytics")}
+            >
+              Analytics
+            </li>
           </ul>
         </div>
 
         <div className="mt-16 w-full">
           {tab === "All services" && <AllServices />}
+          {tab === "Analytics" && <Analytics />}
         </div>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import Service from "../models/serviceModel.js";
+import Worker from "../models/workerModel.js";
+import User from "../models/userModel.js";
 import { errorHandler } from "../utils/error.js";
 import moment from "moment";
 export const createService = async (req, res, next) => {
@@ -396,11 +398,39 @@ export const getAllServices=async(req, res, next)=>{
   try {
     const startIndex=req.query.startIndex || 0;
     const services=await Service.find().skip(startIndex).limit(20);
+
     if(!services){
       return next(errorHandler(400, "no services found..."));
     }
+    const postedServices = await Service.countDocuments();
+    const ongoingService = await Service.countDocuments({
+      isBooked: true,
+    });
+    const completedService = await Service.countDocuments({
+      isCompleted: true,
+    });
+
+    const dateNow = new Date();
+    
+    const lastMonthAgo = new Date(
+      dateNow.getFullYear(),
+      dateNow.getMonth() - 1,
+      dateNow.getDate()
+    );
+    
+    const lastMonthServices = await Service.countDocuments({
+      createdAt: { $gte: lastMonthAgo },
+    });
+    const totalWorker=await Worker.countDocuments({role:"worker"});
+    const totalCustomer=await User.countDocuments({role:"customer"});
     res.status(200).json({
-      services
+      services,
+      postedServices,
+      ongoingService,
+      completedService,
+      lastMonthServices,
+      totalWorker,
+      totalCustomer
     })
   } catch (error) {
     next(error);

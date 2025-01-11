@@ -44,7 +44,6 @@ export default function AllServices() {
             setErrorMessage(error.message);
         }
     }
-    console.log(services)
 
   return (
     <div className="min-h-[400px]">
