@@ -11,7 +11,7 @@ export const updateUser = async (req, res, next) => {
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   if(req.body.hasOwnProperty('username')){
-    if (req.body.username.length<7 || req.body.username.length>15) {
+    if (req.body.username.length<4 || req.body.username.length>15) {
       return next(errorHandler(400, "username must be between 7 and 15 characters long"));
     }
   }

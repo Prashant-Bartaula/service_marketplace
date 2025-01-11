@@ -80,7 +80,6 @@ export default function Analytics() {
           <span className="ml-3">Total Customer</span>
         </h2>
       </div>
-   
     </div>
   );
 }

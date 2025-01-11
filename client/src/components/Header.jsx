@@ -191,7 +191,7 @@ export default function Header() {
 
       </div>
       {modelOpen && (
-        <Model setModelOpen={setModelOpen} handleOperation={handleSignOut} />
+        <Model setModelOpen={setModelOpen} deleteModel={false} handleOperation={handleSignOut} />
       )}
     </>
   );

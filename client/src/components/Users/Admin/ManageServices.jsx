@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
-import {Link, useNavigate} from "react-router-dom"
+import {Link} from "react-router-dom"
 import {useSelector} from "react-redux"
+import moment from "moment";
 import Model from "../../Model";
 export default function ManageServices() {
   const [services, setServices] = useState([]);
@@ -9,8 +10,8 @@ export default function ManageServices() {
   const [error, setError] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [modelOpen, setModelOpen] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const navigate=useNavigate();
 
   useEffect(()=>{
     const getServices=async()=>{
@@ -18,7 +19,7 @@ export default function ManageServices() {
       setError("");
       setSuccessMessage("");
       try {
-        const res=await fetch(`http://localhost:5000/api/service/getWorkerServices`, {
+        const res=await fetch(`http://localhost:5000/api/service/getAllServices`, {
           method:"POST",
           credentials:"include"
         });
@@ -26,6 +27,7 @@ export default function ManageServices() {
         if(!res.ok){
           return setErrorMessage(data.message);
         };
+        data.services.length>19?setShowMore(true):setShowMore(false);
         setSuccessMessage(data.message);
         setServices(data.services);
       } catch (error) {
@@ -55,7 +57,24 @@ const handleDelete=async()=>{
     setModelOpen(false);
   }
 }
-
+const fetchMore=async()=>{
+    setErrorMessage("");
+  const startIndex=services.length;
+  try {
+      const res=await fetch(`http://localhost:5000/api/service/getAllServices?startIndex=${startIndex}`, {
+          method:"POST",
+          credentials:"include"
+      });
+      const data=await res.json();
+      if(!res.ok){
+          return setErrorMessage(data.message);
+      };
+      data.services.length>19?setShowMore(true):setShowMore(false);
+      setServices([...services, ...data.services]);
+    }catch (error) {
+        setErrorMessage(error.message);
+    }
+}
   return errorMessage || services.length===0?(<h1 className="text-2xl text-gray-300 text-center mt-24">Services not found</h1>):(
     <>
 <div className="flex flex-col gap-6 w-full  overflow-x-scroll">
@@ -76,12 +95,13 @@ const handleDelete=async()=>{
                     setServiceId(service._id);
                     setModelOpen(true);
                 }} className="text-sm text-gray-400 cursor-pointer">Delete</button>
-                <button className="text-sm text-gray-400 cursor-pointer" onClick={()=>navigate(`/update-service/${service.slug}`)} >Edit</button>
+                
             </div>
-            {service.isCompleted?<span className="text-sm text-green-500">Completed</span>:service.isBooked?<h1 className="text-sm text-yellow-500">Booked</h1>:null}
+            {service.isCompleted?<span className="text-sm text-green-500">Completed</span>:service.isBooked && !moment(service.serviceDate).format("YYYY-MM-DD") > moment().subtract(3, "days").format("YYYY-MM-DD") ?<h1 className="text-sm text-yellow-500">Booked</h1>:<h1 className="text-sm text-red-500">Outdated</h1>}
         </div>
       )
     })}
+    {showMore && <button onClick={fetchMore} className="text-sm text-white bg-purple-500 py-2 px-4 rounded-lg cursor-pointer transition-all duration-150 ease-linear hover:bg-purple-600">Show more</button>}
     {error?<h1 className="text-xl text-red-500 text-center mt-12">{error}</h1>:null}
     {successMessage?<h1 className="text-xl text-green-500 text-center mt-12">{successMessage}</h1>:null}
 </div>

@@ -242,7 +242,7 @@ export const getTrendingServices = async (req, res, next) => {
   }
 };
 export const deleteService = async (req, res, next) => {
-  if (!req.user.id === req.params.workerId || !req.user.role === "worker") {
+  if (!req.user.id === req.params.workerId || !req.user.role === "worker" || !req.user.role === "admin") {
     return next(errorHandler(401, "unauthorized"));
   }
   try {
