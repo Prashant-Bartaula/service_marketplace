@@ -12,7 +12,7 @@ export const createService = async (req, res, next) => {
     serviceTime,
   } = req.body;
 
-  if (!req.user || !req.user.role === "worker") {
+  if (!req.user || !req.user.role === "worker" || req.user.role==='admin') {
     return next(errorHandler(401, "unauthorized"));
   }
 
@@ -112,7 +112,6 @@ export const getServices = async (req, res, next) => {
       .limit(limit);
 
       
-      
       const services=allservices.filter((service)=>{
         if(!service.isBooked){
           if(moment(service.serviceDate).format("YYYY-MM-DD") >= moment().subtract(2, "days").format("YYYY-MM-DD")){
@@ -180,7 +179,7 @@ export const getCustomerServices = async (req, res, next) => {
 };
 
 export const getWorkerServices = async (req, res, next) => {
-  if (!req.user || !req.user.role === "worker") {
+  if (!req.user || !req.user.role === "worker" || !req.user.role === "admin") {
     return next(errorHandler(401, "unauthorized"));
   }
   try {
@@ -339,7 +338,8 @@ export const bookService = async (req, res, next) => {
   if (
     !req.user ||
     !req.user.id === req.params.userId ||
-    !req.user.role === "customer"
+    !req.user.role === "customer" ||
+    req.user.role==='admin'
   ) {
     next(errorHandler(401, "unauthorized"));
   }
@@ -386,5 +386,23 @@ export const getWorkerPostedServices=async(req, res,next)=>{
     });
   } catch (error) {
     next(error)
+  }
+}
+
+export const getAllServices=async(req, res, next)=>{
+  if(!req.user || !req.user.role==="admin"){
+    return next(errorHandler(401, "unauthorized..."));
+  }
+  try {
+    const startIndex=req.query.startIndex || 0;
+    const services=await Service.find().skip(startIndex).limit(20);
+    if(!services){
+      return next(errorHandler(400, "no services found..."));
+    }
+    res.status(200).json({
+      services
+    })
+  } catch (error) {
+    next(error);
   }
 }
